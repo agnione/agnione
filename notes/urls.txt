@@ -1,0 +1,6 @@
+REST 
+    http://localhost:8080/live
+
+http://localhost:2345/wslogger
+http://localhost:2345/wsstatus
+http://localhost:2345/wsmonitor

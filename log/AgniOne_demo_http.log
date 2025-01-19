@@ -1,0 +1,86 @@
+{"level":"info","time":"2025-01-17T18:35:35+01:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-01-17T18:37:06+01:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-01-17T18:39:21+01:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-01-17T18:39:57+01:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-01-17T18:41:59+01:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-01-17T18:44:28+01:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-01-17T18:44:31+01:00","message":"Application AgniOne Demo Application - 1.0.0.0 loaded"}
+{"level":"info","time":"2025-01-17T18:44:33+01:00","message":"logger instance created with file /media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/log/AgniOne_demo_http.log"}
+{"level":"info","time":"2025-01-17T18:44:35+01:00","message":"logger instance created with file /media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/log/AgniOne_demo_http.log"}
+{"level":"info","time":"2025-01-17T18:44:39+01:00","message":"Found 1 pool setting for appunit Http _demo"}
+{"level":"info","time":"2025-01-17T18:46:32+01:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-01-17T18:46:32+01:00","message":"logger instance created with file /media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/log/AgniOne_demo_http.log"}
+{"level":"info","time":"2025-01-17T18:46:32+01:00","message":"Application AgniOne Demo Application - 1.0.0.0 loaded"}
+{"level":"info","time":"2025-01-17T18:46:32+01:00","message":"Found 1 pool setting for appunit Http _demo"}
+{"level":"warn","time":"2025-01-17T18:46:32+01:00","message":"No Application Units loaded"}
+{"level":"error","time":"2025-01-17T18:46:32+01:00","message":"Failed to load ZappUnit Http _demo - /media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/apps/units/demohttp.so. plugin.Open(\"/media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/apps/units/demohttp\"): plugin was built with a different version of package internal/abi"}
+{"level":"info","time":"2025-01-17T18:46:33+01:00","message":"HTTP monitoring started on 0.0.0.0:8080"}
+{"level":"info","time":"2025-01-17T18:46:33+01:00","message":"starting HTTP monitoring ......"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"Application AgniOne Demo Application - 1.0.0.0 loaded"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"logger instance created with file /media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/log/AgniOne_demo_http.log"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"Found 1 pool setting for appunit Http _demo"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"Loading the 0 appunit of pool [1] of Http _demo"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":" - Starting ....."}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"Loaded & started 1 pool of appunits"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"Starting (0) of [1] - Http _demo.............\nAppunit info -> "}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"Started ------ (0) of [1] - Http _demo successfully"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":" - Starting the ........... DONE"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"Started\t1 out of 1 pool of appunit Http _demo\n"}
+{"level":"info","time":"2025-01-17T18:49:02+01:00","message":"starting the DoGet routine"}
+{"level":"error","time":"2025-01-17T18:49:02+01:00","message":" - DoPost Failed to get the HTTP client plugin unexpected type from module symbols <nil>"}
+{"level":"error","time":"2025-01-17T18:49:02+01:00","message":"  - Failed to get the HTTP client plugin unexpected type from module symbols <nil>"}
+{"level":"info","time":"2025-01-17T18:49:03+01:00","message":"HTTP monitoring started on 0.0.0.0:8080"}
+{"level":"info","time":"2025-01-17T18:49:03+01:00","message":"starting HTTP monitoring ......"}
+{"level":"info","time":"2025-01-17T18:49:12+01:00","message":" - Stopping HTTPZAU demo........... DONE"}
+{"level":"info","time":"2025-01-17T18:49:12+01:00","message":"Application Framework stopped called......"}
+{"level":"info","time":"2025-01-17T18:49:12+01:00","message":"Found AppUnits 1 in pool"}
+{"level":"info","time":"2025-01-17T18:49:12+01:00","message":"AppUnit - [0] Stop called"}
+{"level":"info","time":"2025-01-17T18:49:12+01:00","message":" - Stopping HTTPZAU demo......"}
+{"level":"info","time":"2025-01-17T18:49:13+01:00","message":"Stopping HTTP monitoring server........"}
+{"level":"info","time":"2025-01-17T18:49:13+01:00","message":"Application Framework stopped called........ DONE"}
+{"level":"info","time":"2025-01-17T18:49:13+01:00","message":"Stopping HTTP monitoring server........ DONE"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"logger instance created with file /media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/log/AgniOne_demo_http.log"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"Application AgniOne Demo Application - 1.0.0.0 loaded"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"Found 1 pool setting for appunit Http _demo"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"Loading the 0 appunit of pool [1] of Http _demo"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"Starting (0) of [1] - Http _demo.............\nAppunit info -> "}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"Loaded & started 1 pool of appunits"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":" - Starting ....."}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"Started ------ (0) of [1] - Http _demo successfully"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":" - Starting the ........... DONE"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"Started\t1 out of 1 pool of appunit Http _demo\n"}
+{"level":"info","time":"2025-01-17T18:50:16+01:00","message":"starting the DoGet routine"}
+{"level":"info","time":"2025-01-17T18:50:17+01:00","message":"HTTP monitoring started on 0.0.0.0:8080"}
+{"level":"info","time":"2025-01-17T18:50:17+01:00","message":"starting HTTP monitoring ......"}
+{"level":"info","time":"2025-01-17T18:50:20+01:00","message":" - DoPost Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:20+01:00","message":" - Headers :\r\nDate:Fri, 17 Jan 2025 17:50:20 GMT\nConnection:keep-alive\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\n"}
+{"level":"info","time":"2025-01-17T18:50:20+01:00","message":" - [0] - GET Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:20+01:00","message":" - Headers :\r\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\nDate:Fri, 17 Jan 2025 17:50:20 GMT\nConnection:keep-alive\n"}
+{"level":"info","time":"2025-01-17T18:50:22+01:00","message":" - [1] - GET Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:22+01:00","message":" - Headers :\r\nDate:Fri, 17 Jan 2025 17:50:22 GMT\nConnection:keep-alive\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\n"}
+{"level":"info","time":"2025-01-17T18:50:22+01:00","message":" - DoPost Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:22+01:00","message":" - Headers :\r\nDate:Fri, 17 Jan 2025 17:50:22 GMT\nConnection:keep-alive\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\n"}
+{"level":"info","time":"2025-01-17T18:50:25+01:00","message":" - DoPost Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:25+01:00","message":" - Headers :\r\nDate:Fri, 17 Jan 2025 17:50:25 GMT\nConnection:keep-alive\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\n"}
+{"level":"info","time":"2025-01-17T18:50:26+01:00","message":" - [2] - GET Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:26+01:00","message":" - Headers :\r\nDate:Fri, 17 Jan 2025 17:50:26 GMT\nConnection:keep-alive\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\n"}
+{"level":"info","time":"2025-01-17T18:50:28+01:00","message":" - [3] - GET Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:28+01:00","message":" - Headers :\r\nDate:Fri, 17 Jan 2025 17:50:28 GMT\nConnection:keep-alive\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\n"}
+{"level":"info","time":"2025-01-17T18:50:28+01:00","message":" - DoPost Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:28+01:00","message":" - Headers :\r\nDate:Fri, 17 Jan 2025 17:50:28 GMT\nConnection:keep-alive\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\n"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":" - Stopping HTTPZAU demo........... DONE"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":"Found AppUnits 1 in pool"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":"Application Framework stopped called......"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":"AppUnit - [0] Stop called"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":" - Stopping HTTPZAU demo......"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":"Application Framework stopped called........ DONE"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":"Stopping HTTP monitoring server........"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":"Stopping HTTP monitoring server........ DONE"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":" - DoPost Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":" - Headers :\r\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\nDate:Fri, 17 Jan 2025 17:50:31 GMT\nConnection:keep-alive\n"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":" - demo http stopped. stopper channel closed "}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":" - [4] - GET Result :: Status code: 200"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":" - Headers :\r\nDate:Fri, 17 Jan 2025 17:50:31 GMT\nConnection:keep-alive\nAccess-Control-Allow-Origin:*\nAccess-Control-Allow-Credentials:true\n"}
+{"level":"info","time":"2025-01-17T18:50:31+01:00","message":" - demo http stopped"}
