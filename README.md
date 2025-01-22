@@ -49,7 +49,7 @@ AgniOne Consists with 3 main separated components:
    - Sample Demo HTTP AgniOne Units is a good guide as an implementation guide.<br>
         Please refer to [HTTP Demo Unit] https://github.com/agnione/units
 
-# Intraction/Integration
+# Interaction/Integration
 ![]()<img src="./asserts/AgniOne_inegration.png" width="800px" >
 
 ## Usage
