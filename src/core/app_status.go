@@ -78,15 +78,15 @@ func (app *AgniApp) Memory_Usage() string {
 func (app *AgniApp) Routine_Count() uint16 {
 	defer recover()
 	
-	app.routine_lock.Lock()
-	defer app.routine_lock.Unlock()
+	app.routine_lock.RLock()
+	defer app.routine_lock.RUnlock()
 	return app.no_of_routines
 }
 
 // Failed_Request_Count returns the number of failed requests count set by Add_Request_Failed_Count().
 func (app *AgniApp) Failed_Request_Count() uint64 {
-	app.counter_lock.Lock()
-	defer app.counter_lock.Unlock()
+	app.counter_lock.RLock()
+	defer app.counter_lock.RUnlock()
 	return app.requests_failed
 }
 
@@ -129,8 +129,8 @@ func (app *AgniApp) Add_Request_Failed_Count() {
 func (app *AgniApp) Handled_Request_Count() uint64 {
 	defer recover()
 	
-	app.counter_lock.Lock()
-	defer app.counter_lock.Unlock()
+	app.counter_lock.RLock()
+	defer app.counter_lock.RUnlock()
 	return app.requests_handled
 }
 
@@ -184,11 +184,11 @@ func (app *AgniApp) read_memory_usage(pDoneChan chan bool){
 }
 
 
-// Get_App_Status returns the current application status as [ztypes.AppStatus] [http://example.com]
+// Get_App_Status returns the current application status as [aypes.AppStatus] 
 func (app *AgniApp) Get_App_Status() atypes.AppStatus {
 
-	app.status_lock.Lock()
-	defer app.status_lock.Unlock()
+	app.status_lock.RLock()
+	defer app.status_lock.RUnlock()
 
 	return *app.appstatus
 }
@@ -196,8 +196,8 @@ func (app *AgniApp) Get_App_Status() atypes.AppStatus {
 
 func (app *AgniApp) Get_App_Info() atypes.AppInfo {
 	
-	app.info_lock.Lock()
-	defer app.info_lock.Unlock()
+	app.info_lock.RLock()
+	defer app.info_lock.RUnlock()
 	return *app.appinfo
 }
 
@@ -212,7 +212,7 @@ func (app *AgniApp) update_app_status(){
 		bDone=nil
 	}()
 	
-	go app.read_memory_usage(bDone)	/// call memory ussage read
+	go app.read_memory_usage(bDone)	/// call memory usage read
 	
 	app.appstatus.Req_Handled = app.Handled_Request_Count()
 	app.appstatus.Req_Failed = app.Failed_Request_Count()

@@ -93,7 +93,6 @@ import (
 	"agnione/v1/src/aau/iappunit"
 	iappfw "agnione/v1/src/appfm/iappfw"
 	apptypes "agnione/v1/src/appfm/types"
-	atypes "agnione/v1/src/appfm/types"
 
 	"agnione.appfm/src/logger"
 	ihttpm "agnione.appfm/src/monitors/http"
@@ -105,22 +104,22 @@ type AgniApp struct {
 	
 	started      time.Time       /// holds the application started time
 	wgEntries    *sync.WaitGroup /// instance wait group for go routines
-	counter_lock *sync.Mutex     /// sync lock for request handle counters
-	routine_lock *sync.Mutex     /// sync lock for routine counter
-	info_lock *sync.Mutex     /// sync lock for info of application
-	status_lock *sync.Mutex     /// sync lock for status of application
+	counter_lock *sync.RWMutex     /// sync lock for request handle counters
+	routine_lock *sync.RWMutex     /// sync lock for routine counter
+	info_lock *sync.RWMutex     /// sync lock for info of application
+	status_lock *sync.RWMutex     /// sync lock for status of application
 	ctx *context.Context
 	WSMonitor   *iwsm.WSMonitor /// pointer web socket monitor instance
 	HTTPMonitor *ihttpm.HttpMonitor
-	appconfig  *apptypes.AppConfig  /// pointer for application configuration	
+	appconfig  *apptypes.AppConfig  /// pointer for application configuration
 	coreconfig  *apptypes.FMConfig  /// pointer for application configuration
 
 	logger     *logger.ALogger
 	appUnits         []iappunit.IAppUnit /// pool to hold the application units
 	
-	appunit_info []atypes.AppUnitInfo
-	appinfo *atypes.AppInfo
-	appstatus *atypes.AppStatus
+	appunit_info []apptypes.AppUnitInfo
+	appinfo *apptypes.AppInfo
+	appstatus *apptypes.AppStatus
 	
 	last_mem_usage apptypes.MemUsage
 	
@@ -184,13 +183,13 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 	
 	/// init the sync locks
 	app.wgEntries = &sync.WaitGroup{}
-	app.counter_lock = &sync.Mutex{}
-	app.routine_lock = &sync.Mutex{}
-	app.status_lock=&sync.Mutex{}
-	app.info_lock=&sync.Mutex{}
+	app.counter_lock = &sync.RWMutex{}
+	app.routine_lock = &sync.RWMutex{}
+	app.status_lock=&sync.RWMutex{}
+	app.info_lock=&sync.RWMutex{}
 	
-	app.appinfo=&atypes.AppInfo{}
-	app.appstatus=&atypes.AppStatus{}
+	app.appinfo=&apptypes.AppInfo{}
+	app.appstatus=&apptypes.AppStatus{}
 	
 	/// set the appication name and version
 	app.name = app.appconfig.App.Name
@@ -515,7 +514,7 @@ func (app *AgniApp) Load_Units() {
 	} else {
 		app.Write2LogConsole("Loaded & started " +  strconv.Itoa(len(app.appUnits))  + " pool of appunits", apptypes.LOG_INFO)
 		
-		app.appunit_info=make([]atypes.AppUnitInfo, len(app.appUnits))
+		app.appunit_info=make([]apptypes.AppUnitInfo, len(app.appUnits))
 	}
 }
 
