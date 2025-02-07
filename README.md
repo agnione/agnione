@@ -18,7 +18,7 @@ It is designed and developed highly in concerns with:
 - Easy Containerization as Docker containers and scale as required
 - Limit number of CPU Cores per for execution per instance
 - Faster software development due to re-usable framework.
-- Low low code platform, that helps small businesses to create custom software to streamline their operations quickly.
+- Low code platform, that helps small businesses to create custom software to streamline their operations quickly.
 
 ## Architecture
 ![]()<img src="./asserts/AgniOne_toplevel.png" width="800px" >
