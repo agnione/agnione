@@ -11,13 +11,14 @@ It is designed and developed highly in concerns with:
 - SOLID principles
 - CLEAN Architecture
 - Low Memory footprint & CPU usage and High Performance
-- Parallelism & Concurrency as must as possible
+- Parallelism & Concurrency as much as possible
 - Easy expandability with plugins & units
 - Easy deployment & maintainability
 - Observability & Controllability with less effort
 - Easy Containerization as Docker containers and scale as required
 - Limit number of CPU Cores per for execution per instance
-- Minimize & faster software development
+- Faster software development due to re-usable framework.
+- Low code platform, that helps small businesses to create custom software to streamline their operations quickly.
 
 ## Architecture
 ![]()<img src="./asserts/AgniOne_toplevel.png" width="800px" >
@@ -25,7 +26,6 @@ It is designed and developed highly in concerns with:
 AgniOne Consists with 3 main separated components:
 
 - AgniOne Application Framework
-  [Framework image comes here]
   - Main application shell
   - Act as a host for AgniOne PlugIns & Units
   - Create instance of requested AgniOne Unit(s) based on the configuration file.
@@ -49,12 +49,12 @@ AgniOne Consists with 3 main separated components:
    - Sample Demo HTTP AgniOne Units is a good guide as an implementation guide.<br>
         Please refer to [HTTP Demo Unit] https://github.com/agnione/units
 
-# Intraction/Integration
+# Interaction/Integration
 ![]()<img src="./asserts/AgniOne_inegration.png" width="800px" >
 
 ## Usage
 AgniOne Application Framework + AgniOne PlugIns + AgniOne Units can be used to build any type of applications such as
-- Unattened backend applications to perform specific tasks
+- Unattened high performance backend applications to perform specific tasks
 - HTTP Servers/Clients
 - Web Socket Servers/Clients for real-time streaming
 - MQ Clients
@@ -79,7 +79,7 @@ So the development has to be focused only on the business requirements and build
 Please refer to [Start Guide](./README_Build.md)
 
 ## TODO
-- CLI for controlling/Monitorin AgniOne via tpc/ip
+- CLI for controlling/Monitoring AgniOne via TPC/IP
 - Full control of units via HTTP & CLI
 - Load configuration via HTTP/HTTPS endpoints
 - Load AgniOne Units via HTTP/HTTP endpoints

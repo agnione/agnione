@@ -32,10 +32,10 @@ import (
 	"fmt"
 	"plugin"
 
-	aau "agnione/v1/src/aau/iappunit"                  /// import the unit interface
-	ihttp "agnione/v1/src/afplugins/http/iahttpclient" /// import the http client interface
+	aau "agnione/v2/src/aau/iappunit"                  /// import the unit interface
+	ihttp "agnione/v2/src/afplugins/http/iahttpclient" /// import the http client interface
 
-	iws "agnione/v1/src/afplugins/websocket/iawsclient" /// import the wsclient interface
+	iws "agnione/v2/src/afplugins/websocket/iawsclient" /// import the wsclient interface
 )
 
 // load_plugin loads the plugin of given plugin name and given interface name

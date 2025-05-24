@@ -59,7 +59,7 @@ Author        :   D. Ajith Nilantha de Silva  | 02/01/2024
 package utils
 
 import (
-	apptypes "agnione/v1/src/appfm/types"
+	apptypes "agnione/v2/src/appfm/types"
 	"encoding/json"
 	"errors"
 )
@@ -72,21 +72,14 @@ func LoadCoreConfiguration(filename *string) (*apptypes.FMConfig, error) {
 	if _err != nil {
 		return nil, _err
 	}
-
+	_config := &apptypes.FMConfig{}
 	defer func ()  {
 		_file.Close()
 		_file = nil
-	}()
-	
-	_config := &apptypes.FMConfig{}
-	_decoder := json.NewDecoder(_file)
-	_err = _decoder.Decode(_config)
-
-	defer func ()  {
-		_decoder = nil
-		_config = nil
 		_err=nil
 	}()
+	
+	_err= json.NewDecoder(_file).Decode(_config)
 	
 	if _err != nil {
 		return nil,errors.New("Error decoding JSON data: " +  _err.Error())
@@ -104,23 +97,20 @@ func LoadAppConfiguration(filename *string) (*apptypes.AppConfig, error) {
 		return nil, _err
 	}
 	
+	_appConfig := &apptypes.AppConfig{}
+	
 	defer func ()  {
 		_file.Close()
 		_file = nil
-	}()
-	
-	_appConfig := &apptypes.AppConfig{}
-	_decoder := json.NewDecoder(_file)
-	_err = _decoder.Decode(_appConfig)
-	
-	defer func ()  {
-		_appConfig = nil
-		_decoder = nil
 		_err=nil
 	}()
+	
+	_err = json.NewDecoder(_file).Decode(_appConfig)
 	
 	if _err != nil {
 		return nil, errors.New("Error decoding JSON data: " +  _err.Error())
 	}
 	return _appConfig, nil /// all good.
 }
+
+

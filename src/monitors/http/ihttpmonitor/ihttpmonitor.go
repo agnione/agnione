@@ -1,6 +1,6 @@
 package ihttpmonitor
 
-import agniapp "agnione/v1/src/appfm/iappfw"
+import agniapp "agnione/v2/src/appfm/iappfw"
 type IHTTPMonitor interface {
 	Initialize(agniapp.IAgniApp)
 	DeInitialize()

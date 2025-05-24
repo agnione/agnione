@@ -4,3 +4,8 @@ REST
 http://localhost:2345/wslogger
 http://localhost:2345/wsstatus
 http://localhost:2345/wsmonitor
+
+
+NEED to move WS monitoring to SSE using pure HTTP
+media/ajith/data3/Developments/GO/gin_webf/examples/server-sent-event
+media/ajith/data3/Developments/GO/RnD/test_app/sse/server/server.go

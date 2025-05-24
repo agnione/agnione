@@ -1,0 +1,116 @@
+
+------------------ Profiling Application framework -------------
+
+https://github.com/google/pprof
+https://kcachegrind.sourceforge.net/html/Home.html
+https://www.paulstephenborile.com/2018/12/profiling-a-golang-rest-api-server/
+https://github.com/google/pprof/blob/main/doc/README.md
+
+
+A Profile is a collection of stack traces showing the call sequences that led to instances of a particular event, such as allocation. Packages can create and maintain their own profiles; the most common use is for tracking resources that must be explicitly closed, such as files or network connections.
+
+Each Profile has a unique name. A few profiles are predefined:
+
+    goroutine    - stack traces of all current goroutines
+    heap         - a sampling of all heap allocations
+    threadcreate - stack traces that led to the creation of new OS threads
+    block        - stack traces that led to blocking on synchronization primitives
+    mutex        - stack traces of holders of contended mutexes
+
+        http://localhost:6060/debug/pprof/goroutine
+        http://localhost:6060/debug/pprof/heap
+        http://localhost:6060/debug/pprof/threadcreate
+        http://localhost:6060/debug/pprof/block
+        http://localhost:6060/debug/pprof/mutex
+
+and also 2 more: the CPU profile and the CPU trace.
+
+    http://localhost:6060/debug/pprof/profile
+    http://localhost:6060/debug/pprof/trace?seconds=5
+    
+
+Requirments ----
+
+install below 2 tools
+
+    sudo apt install graphviz
+
+    https://github.com/google/pprof
+
+    https://pkg.go.dev/net/http/pprof
+
+1. start the profiler
+    http://localhost:8080/admin/profiler/start
+
+    when the http status 200 and message received, application is now capable or profiling memory and CPU
+    in the terminal execute
+
+2. send HTTP rewquestes to your endpoints in to terminals
+
+        https://github.com/tsliwowicz/go-wr
+
+        ./go-wrk -c 80 -d 30  http://localhost:8080/info
+        ./go-wrk -c 80 -d 30  http://localhost:8080/status
+
+3. in another terminal collect the pofile data
+    
+    CPU profile
+    go tool pprof "http://10.81.49.156:6000/debug/pprof/profile?seconds=30" -bench .
+
+    go tool pprof "http://10.81.49.156:6000/debug/pprof/profile?seconds=30" -bench .
+
+    Memory Profile
+    go tool pprof -http=0.0.0.0:8082 "http://10.81.49.156:6000/debug/pprof/heap?seconds=30" -bench .
+
+    Live Memory usage
+        go tool pprof -http=0.0.0.0:8082 http://10.81.49.156:6000/debug/pprof/goroutine?debug=1
+        
+    
+    go tool pprof -http=0.0.0.0:8082 "http://localhost:8081/debug/pprof/profile?seconds=30" -bench .
+
+
+    GoRoutines
+        go tool pprof -http=0.0.0.0:8082 http://localhost:6000/debug/pprof/goroutine
+
+        to get live state of all goroutines.
+            go tool pprof -http=0.0.0.0:8082 http://localhost:6060/debug/pprof/goroutine?debug=1 
+            
+    look at the goroutine blocking profile, after calling runtime.SetBlockProfileRate in your program:
+
+        go tool pprof http://localhost:6000/debug/pprof/block??seconds=30" -bench .
+    
+    look at the holders of contended mutexes, after calling runtime.SetMutexProfileFraction in your program:
+        go tool pprof http://localhost:6060/debug/pprof/mutex -bench .
+
+4. The package also exports a handler that serves execution trace data for the "go tool trace" command. 
+    To collect a 5-second execution trace:
+
+        curl -o trace.out http://localhost:6000/debug/pprof/trace?seconds=5
+        go tool trace  -http=:8090  trace.out
+
+    this will collect the profile data (cpu and memory) for 30 seconds
+
+5. then using pprof tool you can visualize the data
+            pprof -http=0.0.0.0:8091 .\src\app\app.exe C:\Users\AnjithNilanthaDeSilv\pprof\pprof.app.exe.samples.cpu.006.pb.gz
+
+5. application has memory leak issues, you can do
+        
+        1. Trigger GC (Go to /debug/pprof/heap?gc=1 in your browser)
+        2. Download heap data; give the downloaded file name -> file1
+        3. Wait for seconds/minutes.
+        4. Trigger another GC (Go to /debug/pprof/heap?gc=1 in your browser)
+        5. Download another heap of data; give the downloaded file name -> file2
+        6. Compare using the diff_base
+            go tool pprof -http=:6060 -diff_base file2 file1
+    
+    
+    Getting Allocation (a sampling of all past memory allocations) profile and Tricks
+        go tool pprof http://localhost:5555/debug/pprof/allocs
+
+        During the allocs profiling, you can do it
+
+        If you saw bytes.growSlice , you should think about using sync.Pool .
+        If you saw your functions, check whether you define fixed capacity in your slice or maps.
+
+
+go test -cpuprofile cpu.prof -memprofile mem.prof -bench .

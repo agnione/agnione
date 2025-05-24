@@ -29,49 +29,76 @@
 package agni
 
 import (
-	aftypes "agnione/v1/src/appfm/types"
+	aftypes "agnione/v2/src/appfm/types"
 	"fmt"
-	"time"
 
 	"agnione.appfm/src/logger"
 )
 
 // Write2Console writes the given entry into console
 func (app *AgniApp) Write2Console(pEntry string) {
-	go func ()  {
-		fmt.Println(pEntry)
-	}()
+	fmt.Println(pEntry)
 }
 
 func (app *AgniApp) Set_LogLevel(log_level aftypes.LogLevel) {
 	app.logger.Set_LogLevel(log_level)
 }
 
-
 // Write2Log writes the given entry into the application log
 func (app *AgniApp) Write2Log(pEntry string, pLog_Level aftypes.LogLevel) {
-
-	go func ()  {
-		/// broadcast log entries to websocket endpoint	
-		if app.WSMonitor != nil && app.WSMonitor.IsStarted() {
-			go app.WSMonitor.BroadCastLogEntries([]byte(time.Now().Format("2006-01-02 - 15:04:05") + pEntry))
-		}	
-		
-
-		/// in case we do not have logger initialized. we write the entries to the console
-		if app.logger == nil {
-			fmt.Println(pEntry)
-			return
-		}
-		///pass the log entry to logger
-		app.logger.WriteLog(logger.LogMessage{Msg_Entry: pEntry, Msg_Type: pLog_Level})
-		}()
+	app.log_entry <- logger.LogMessage{Msg_Entry: pEntry, Msg_Type: pLog_Level}
 }
 
 // Write2Log writes the given entry into the application log
 func (app *AgniApp) Write2LogConsole(pEntry string, pLog_Level aftypes.LogLevel) {
-	go func(){
-		app.Write2Console(pEntry)
-		app.Write2Log(pEntry,pLog_Level)
+	fmt.Println(pEntry)
+	app.log_entry <- logger.LogMessage{Msg_Entry: pEntry, Msg_Type: pLog_Level}
+
+}
+
+func (app *AgniApp) log_writer() {
+
+	defer func() {
+		if _r := recover(); _r != nil {
+			fmt.Println("Recovered panic from log_writer. ", _r)
+			_r = nil
+		}
+
+		app.Remove_Routine()
+		app.Write2Console("log_writer stopped")
 	}()
+
+	_logEntry := logger.LogMessage{}
+
+	defer func() {
+		_logEntry = logger.LogMessage{}
+	}()
+
+	app.Write2Console("log_writer started")
+
+	for {
+		select {
+		case <-app.stopChan:
+			return
+		case _logEntry = <-app.log_entry:
+			{
+				if len(_logEntry.Msg_Entry) > 0 {
+
+					if app.logger == nil {
+						fmt.Println(_logEntry.Msg_Entry)
+						continue
+					} else {
+						app.logger.WriteLog(_logEntry)
+					}
+
+					if app.SSEMonitor != nil {
+						if app.SSEMonitor.MonitorClientsCount() > 0 {
+							app.log_message <- _logEntry.Msg_Entry /// broadcasts received log message
+						}
+					}
+
+				}
+			}
+		}
+	}
 }

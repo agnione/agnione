@@ -31,16 +31,16 @@
 package agni
 
 import (
-	aap "agnione/v1/src/aau/iappunit" /// import the unit interface
+	aap "agnione/v2/src/aau/iappunit" /// import the unit interface
 	"errors"
 	"fmt"
 	"strings"
 
-	ihttp "agnione/v1/src/afplugins/http/iahttpclient" /// import the http interface
+	ihttp "agnione/v2/src/afplugins/http/iahttpclient" /// import the http interface
 
-	iws "agnione/v1/src/afplugins/websocket/iawsclient" /// import the wsclient interface
+	iws "agnione/v2/src/afplugins/websocket/iawsclient" /// import the wsclient interface
 
-	atypes "agnione/v1/src/appfm/types"
+	atypes "agnione/v2/src/appfm/types"
 
 	zutls "agnione.appfm/src/utils"
 )

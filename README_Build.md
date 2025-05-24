@@ -47,7 +47,7 @@ find . -name "*.sh" -exec chmod 775 {} \;
 ./build-plugins.sh ~/AgniOne/agnione
 ```
 <b>Should any errors relates to AgniOne packages means the AgniOne packages are not located in the $GOROOT path. Please verify.</b>
-*** It should be located at $GOROOT/src/agnione/v1
+*** It should be located at $GOROOT/src/agnione/v2
 
 4. Clone the AgniOne Application Framework to your project folder
 ```

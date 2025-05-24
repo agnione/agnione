@@ -31,7 +31,7 @@
 package agni
 
 import (
-	apptypes "agnione/v1/src/appfm/types"
+	apptypes "agnione/v2/src/appfm/types"
 	"os"
 
 	autls "agnione.appfm/src/utils"

@@ -28,7 +28,7 @@
 package utils
 
 import (
-	atypes "agnione/v1/src/appfm/types"
+	atypes "agnione/v2/src/appfm/types"
 	"bufio"
 	"os"
 )

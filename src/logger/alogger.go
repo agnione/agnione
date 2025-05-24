@@ -39,23 +39,23 @@ Ajith de Silva				  16/12/2024  Updated		Added set_loge_level method
 package logger
 
 import (
-	atypes "agnione/v1/src/appfm/types"
+	atypes "agnione/v2/src/appfm/types"
 	"fmt"
 
-	iappfw "agnione/v1/src/appfm/iappfw" /// import interface of Agni
+	iappfw "agnione/v2/src/appfm/iappfw" /// import interface of Agni
 
 	"github.com/rs/zerolog"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-type ALogger struct {	
-	logmessage chan LogMessage
-	appInstace iappfw.IAgniApp
-	logger     zerolog.Logger
-	ljkLogger *lumberjack.Logger
-	stopper    chan bool
-	id         int
-	IS_Started bool
+type ALogger struct {
+	logmessage     chan LogMessage
+	appInstace     iappfw.IAgniApp
+	logger         zerolog.Logger
+	ljkLogger      *lumberjack.Logger
+	stopper        chan bool
+	id             int
+	IS_Started     bool
 	is_initialized bool
 }
 
@@ -68,28 +68,27 @@ type LogMessage struct {
 // Returns true if the file path is exists
 // Returns false if the file path isn't exist
 func (al *ALogger) Initialize(app_instance iappfw.IAgniApp, filepath string, log_level atypes.LogLevel, instance_id int) (bool, error) {
-	
+
 	if app_instance == nil {
 		return false, fmt.Errorf("application instance is not initialized")
 	}
-	
+
 	al.appInstace = app_instance
 
 	al.ljkLogger = &lumberjack.Logger{
-        Filename: filepath,
-        MaxSize: 5,
-      	MaxAge:     28,
-      	Compress:   true,
+		Filename:  filepath,
+		MaxSize:   5,
+		MaxAge:    28,
+		Compress:  true,
 		LocalTime: true,
-	  
-    }
+	}
 
-	al.logger =zerolog.New(al.ljkLogger).With().Timestamp().Logger()
-	
+	al.logger = zerolog.New(al.ljkLogger).With().Timestamp().Logger()
+
 	al.id = instance_id
 	al.logger.Level(al.get_log_level(log_level))
 	al.logmessage = make(chan LogMessage)
-	
+
 	return true, nil
 }
 
@@ -98,10 +97,10 @@ func (al *ALogger) GetID() (instance_id int) {
 	return al.id
 }
 
-func (al *ALogger) get_log_level(log_level atypes.LogLevel) zerolog.Level  {
-	
+func (al *ALogger) get_log_level(log_level atypes.LogLevel) zerolog.Level {
+
 	switch log_level {
-	
+
 	case atypes.LOG_DEBUG:
 		return zerolog.DebugLevel
 	case atypes.LOG_INFO:
@@ -109,7 +108,7 @@ func (al *ALogger) get_log_level(log_level atypes.LogLevel) zerolog.Level  {
 	case atypes.LOG_WARN:
 		return zerolog.WarnLevel
 	case atypes.LOG_ERROR:
-			return zerolog.ErrorLevel
+		return zerolog.ErrorLevel
 	case atypes.LOG_PANIC:
 		return zerolog.ErrorLevel
 	default:
@@ -117,15 +116,13 @@ func (al *ALogger) get_log_level(log_level atypes.LogLevel) zerolog.Level  {
 	}
 }
 
-
 // Clear resources and stop the channel
 func (al *ALogger) DeInitialize() {
 	close(al.logmessage)
 	al.appInstace = nil
-	
-	al.ljkLogger=nil
-}
 
+	al.ljkLogger = nil
+}
 
 func (al *ALogger) Start() bool {
 
@@ -133,20 +130,20 @@ func (al *ALogger) Start() bool {
 	go al.log_writer()
 
 	al.IS_Started = true
-	al.is_initialized =true
+	al.is_initialized = true
 	al.logger.Info().Msg("Logger Initialized & Started")
 	return al.IS_Started
 }
 
 func (al *ALogger) Stop() bool {
-	
+
 	defer recover()
-	
+
 	if !al.IS_Started {
 		return al.IS_Started
 	}
 	close(al.stopper)
-	
+
 	al.IS_Started = false
 	al.ljkLogger.Close()
 	return al.IS_Started
@@ -156,39 +153,46 @@ func (al *ALogger) Set_LogLevel(log_level atypes.LogLevel) {
 	al.logger.Level(al.get_log_level(log_level))
 }
 
-
 // log_writer writes log entries according to the message type
 func (al *ALogger) log_writer() {
 
 	var _mlogmsg LogMessage
-	_ok:=false
-	
-	defer func ()  {
-		_mlogmsg=LogMessage{}
+	_ok := false
+
+	defer func() {
+		if _r := recover(); _r != nil {
+			fmt.Println("Recovered panic from log_writer. ", _r)
+			_r = nil
+		}
+
+		_mlogmsg = LogMessage{}
+
 	}()
+
 	for {
 		select {
-			case <-al.stopper:
-				return
+		case <-al.stopper:
+			return
 
-			case _mlogmsg,_ok = <-al.logmessage:{
-				
-				if !_ok || ! al.is_initialized  {
+		case _mlogmsg, _ok = <-al.logmessage:
+			{
+
+				if !_ok || !al.is_initialized {
 					return
 				}
 
 				// Writes log according to the log level
 				switch _mlogmsg.Msg_Type {
-					case atypes.LOG_ERROR:
-						al.logger.Error().Msg(_mlogmsg.Msg_Entry)
-					case atypes.LOG_WARN:
-						al.logger.Warn().Msg(_mlogmsg.Msg_Entry)
-					case atypes.LOG_INFO:
-						al.logger.Info().Msg(_mlogmsg.Msg_Entry)
-					case atypes.LOG_DEBUG:
-						al.logger.Debug().Msg(_mlogmsg.Msg_Entry)
-					case atypes.LOG_PANIC:
-						al.logger.Error().Msg("**PANIC**" + _mlogmsg.Msg_Entry)
+				case atypes.LOG_ERROR:
+					al.logger.Error().Msg(_mlogmsg.Msg_Entry)
+				case atypes.LOG_WARN:
+					al.logger.Warn().Msg(_mlogmsg.Msg_Entry)
+				case atypes.LOG_INFO:
+					al.logger.Info().Msg(_mlogmsg.Msg_Entry)
+				case atypes.LOG_DEBUG:
+					al.logger.Debug().Msg(_mlogmsg.Msg_Entry)
+				case atypes.LOG_PANIC:
+					al.logger.Error().Msg("**PANIC**" + _mlogmsg.Msg_Entry)
 				}
 			}
 		}
@@ -198,7 +202,7 @@ func (al *ALogger) log_writer() {
 
 // WriteDebug Writes the log entry in debug level
 func (al *ALogger) WriteLog(pLogMessage LogMessage) {
-	
+
 	if al.IS_Started {
 		al.logmessage <- pLogMessage
 	}
@@ -232,5 +236,5 @@ func (al *ALogger) WriteFatal(pEntry string) {
 // WritePanic Writes the log entry in error level
 func (al *ALogger) WritePanic(pEntry string) {
 	/// Type "Error" is used here to prevent the process from stalling
-	al.logmessage <- LogMessage{Msg_Entry: pEntry, Msg_Type: atypes.LOG_PANIC} 
+	al.logmessage <- LogMessage{Msg_Entry: pEntry, Msg_Type: atypes.LOG_PANIC}
 }
