@@ -1,14 +1,14 @@
-# Agni Application Framework - Monitoring/Controlling
+# Agni Application Framework V2 - Monitoring/Controlling
 
 ## About
-Agni application framework is a generic High Performance extendable modular system written in Go (https://go.dev/) for Unix based systems.<br>
+Agni application framework is a generic High Performance extendable modular system written in Go 1.24 (https://go.dev/) for Unix based systems.<br>
 
 When the application is running with N number of units it is possible to monitor its activities by its log files.
 In order to do that person who monitor has to be in the same machine or use any observability tool so that it can be monitored remotely.
 
-AgnoOne Application Framework is having build-in REST and Wsb Socket monitoring features.
+But, AgnoOne Application Framework is having build-in REST and Server Sent Event (SSE) (https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) monitoring features.
 
-REST Monitoring is on by default and Web Socket Monitoring had to be switched on via REST API calls.
+REST/SSE Monitoring is on by default with given IP & port in the core.config file.
 <br/> <br/>
 
 ![]()<img src="./asserts/icon_image.png" width="150px" >
@@ -17,9 +17,7 @@ REST Monitoring is on by default and Web Socket Monitoring had to be switched on
   There 3 types of REST APIs
    
   1. Retrieve Information
-  2. Control Application
-  3. Control Web Socket Monitoring
-   
+  2. Control Application   
    
   All the HTTP REST endpoint will be hosted at http://localhost:8080 by default.
    
@@ -34,27 +32,30 @@ REST Monitoring is on by default and Web Socket Monitoring had to be switched on
 eg:- <br/>
   http://localhost:8080/admin/log/setlevel?level=info
   http://localhost:8080/admin/log/setlevel?level=warn
-  
   <br/> <br/>
+![]()<img src="./asserts/sse.png" width="200px" >
+### SSE Monitring
 
-![]()<img src="./asserts/websocket_client.png" width="150px" >
-### Web Socket Monitring
+In order to monitor the application real-time activities over Server Sent Events (SSE), AgniOne Applicaiton contains build-in monitoring UI.
+#### Monitoing UI end points   
+  1. Real-time status monitor -> http://localhost:8080/monitor/view/status
+  2. Real-time log monitor -> http://localhost:8080/monitor/view/logs
+  3. Real-time monitor event viewer -> http://localhost:8080/monitor/view/events
 
-In order to monitor the application real-time activities over web socket, it is required to start the AgniOne built-in web socket monitoring feature.
-#### start web sokcet monitorin
-  URL: http://localhost:8080/admin/monitor/start
-  METHOD: GET
-  HTTP-HEADER apikey:09E64D1428F9854F16DBBEEC1AFA6270
+#### monitoring UIs
+![]()<a href="./asserts/monitors/status_monitor.png" target="blank"> <img src="./asserts/monitors/status_monitor.png" width="300px"></a> &nbsp;&nbsp; ![]()<a href="./asserts/monitors/log_monitor.png" target="blank"><img src="./asserts/monitors/log_monitor.png" width="300px" ></a>&nbsp;&nbsp;![]()<a href="./asserts/monitors/events_monitor.png" target="blank"><img src="./asserts/monitors/events_monitor.png" width="300px" ></a>
+
+#### monitoring video capture
+<video width="600" height="400" controls>
+  <source src="agnione_monitoring.webm" type="video/webm">
+</video>
+
+#### Monitoing API end points
+Below API endpoint can be used to build custom monitoring intrafaces or integration to external applcation as feeder and act based on the received information. 
   
-  When the web socket monitor started there are 3 real-time monitoring facilities.
-  1. Real-time status monitor -> http://localhost:2345/wsstatus
-  2. Real-time log monitor -> http://localhost:2345/wslogger
-  3. Real-time monitor message viewer -> http://localhost:2345/wsmonitor
-
-Also these web socket endpoints can be hooked up to external monitoring applications and act based on the received information.
-
-When monitoring over web socket is done, it is recommended to shutdown it using
- URL http://localhost:8080/admin/monitor/start with valid apikey.
+  1. Real-time status monitor -> http://localhost:8080/monitor/status/read
+  2. Real-time log monitor -> http://localhost:8080/monitor/logs/read
+  3. Real-time monitor event viewer -> http://localhost:8080/monitor/events/read
  
  
 

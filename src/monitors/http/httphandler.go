@@ -186,7 +186,7 @@ func (hm *HttpMonitor) Log_View_Handler(w http.ResponseWriter, r *http.Request) 
 
 	hm.Render_View_Handler(w, "ui/monitor_client.html", map[string]string{
 		"Name":     "Log",
-		"Endpoint": "log",
+		"Endpoint": "logs",
 		"Addr":     hm.httpAddr,
 	})
 }
@@ -203,7 +203,7 @@ func (hm *HttpMonitor) Status_View_Handler(w http.ResponseWriter, r *http.Reques
 func (hm *HttpMonitor) Event_View_Handler(w http.ResponseWriter, r *http.Request) {
 
 	hm.Render_View_Handler(w, "ui/monitor_client.html", map[string]string{
-		"Name":     "Event",
+		"Name":     "Events",
 		"Endpoint": "events",
 		"Addr":     hm.httpAddr,
 	})
@@ -267,7 +267,7 @@ func (hm *HttpMonitor) Start(pAddress *string, pHttp_Port *int) {
 			_mux.Handle("/monitor/view/status", http.HandlerFunc(hm.Status_View_Handler))
 			_mux.Handle("/monitor/view/events", http.HandlerFunc(hm.Event_View_Handler))
 
-			_mux.Handle("/monitor/log/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Logger))))
+			_mux.Handle("/monitor/logs/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Logger))))
 			_mux.Handle("/monitor/status/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Status))))
 			_mux.Handle("/monitor/events/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Monitor))))
 

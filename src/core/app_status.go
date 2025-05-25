@@ -35,7 +35,6 @@ import (
 	atypes "agnione/v2/src/appfm/types"
 	"fmt"
 	"runtime"
-	"sync/atomic"
 	"time"
 
 	kutls "agnione.appfm/src/utils"
@@ -77,32 +76,31 @@ func (app *AgniApp) Memory_Usage() string {
 
 // Routine_Count returns the number of routines currently running
 func (app *AgniApp) Routine_Count() uint32 {
-	return atomic.LoadUint32(&app.no_of_routines)
+	return uint32(app.no_of_routines.Load())
 }
 
 // Failed_Request_Count returns the number of failed requests count set by Add_Request_Failed_Count().
 func (app *AgniApp) Failed_Request_Count() uint64 {
-	return atomic.LoadUint64(&app.requests_failed)
+	return app.requests_failed.Load()
 }
 
 // Add_Request_HandleCount adds 1 to the request handle count.
 // This function is useful to external modules to update his request handle count
 func (app *AgniApp) Add_Request_HandleCount() {
-	atomic.AndUint64(&app.requests_handled, 1)
+	app.requests_handled.Add(1)
 }
 
 // Add_Request_Failed_Count adds 1 to the request failed handle count.
 // This function is useful to external modules to update his request handle count
 func (app *AgniApp) Add_Request_Failed_Count() {
-	atomic.AndUint64(&app.requests_failed, 1)
+	app.requests_failed.Add(1)
 }
 
 // Handled_Request_Count returns the number of requests handled set by Add_Request_HandleCount().
 func (app *AgniApp) Handled_Request_Count() uint64 {
-	return atomic.LoadUint64(&app.requests_handled)
+	return app.requests_handled.Load()
 }
 
-// Started returns the application started time
 func (app *AgniApp) Started() time.Time {
 	return app.started
 }

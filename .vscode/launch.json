@@ -13,12 +13,11 @@
             //"buildFlags": "-ldflags '-s -w  '",
             //"buildFlags": "-gcflags 'all=-N -l'",
             "args": [
-                        "--main_path","/media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/",
-                        "--app_path","/media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/apps/config/demohttp/app.config",
-                        "--log_path","/media/ajith/data2/Developments/GO/RnD/AgniOne/agni/Agni/log/",
+                        "--main_path","${workspaceFolder}/",
+                        "--app_path","${workspaceFolder}/apps/config/demohttp/app.config",
+                        "--log_path","${workspaceFolder}/log/",
                         "--rest_port","8080",
-                        "--cpu_count","5",
-                        "--ws_port","2345"
+                        "--cpu_count","5"
                     ]
         }
     ]

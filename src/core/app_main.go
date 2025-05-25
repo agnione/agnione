@@ -138,12 +138,12 @@ type AgniApp struct {
 	logfile_base string  /// holds the base path of the log file
 	app_log_file string  /// holds the application log file name. Generated during the Initialize
 
-	stopStatus       chan bool /// channel to control the application status readers
-	stopChan         chan bool /// channel to control the application stop
-	id               *int      /// holds the Process ID of the application.
-	requests_handled uint64    /// holds the handled request count
-	requests_failed  uint64    /// holds the failed request count
-	no_of_routines   uint32    //uint16    /// holds the running number of go routines
+	stopStatus       chan bool     /// channel to control the application status readers
+	stopChan         chan bool     /// channel to control the application stop
+	id               *int          /// holds the Process ID of the application.
+	requests_handled atomic.Uint64 /// holds the handled request count
+	requests_failed  atomic.Uint64 /// holds the failed request count
+	no_of_routines   atomic.Int32  //uint16    /// holds the running number of go routines
 
 	reload_requested bool /// flag to indicated application reload request
 }
@@ -180,8 +180,6 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 		return false, fmt.Errorf("main configuration file failed to load - %v", _err)
 	}
 
-	app.requests_handled = 0 /// init counter request_handled
-	app.requests_failed = 0  /// init counter requests_failed
 	app.started = time.Now() /// set the started time to current date-time
 
 	app.stopChan = make(chan bool) /// init the stopper channel
@@ -241,9 +239,6 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 			app.logger = nil
 			app.Write2Console("Failed to start logger instance created with file " + app.app_log_file)
 		} else {
-
-			atomic.AddUint32(&app.no_of_routines, 1) ///increment the routine count
-
 			app.Add_Routine()
 			go app.log_writer()
 			app.Write2Console("logger instance created with file " + app.app_log_file)
@@ -489,7 +484,7 @@ func (app *AgniApp) Stop_Logger() {
 			app.logger.Stop()
 			fmt.Println("Stopping the logger ........ DONE")
 			app.logger.IS_Started = false
-			atomic.AddUint32(&app.no_of_routines, ^uint32(0)) ///reduce the routine count
+			app.no_of_routines.Add(^int32(0))
 		}
 	}
 
@@ -632,13 +627,13 @@ func (app *AgniApp) WaitforClose() {
 
 // Add_Routine increment the routine count and add 1 to the framework waitgroup
 func (app *AgniApp) Add_Routine() {
-	atomic.AddUint32(&app.no_of_routines, 1)
+	app.no_of_routines.Add(1)
 	app.wgEntries.Add(1)
 }
 
 // Remove_Routine decrements the routine count and remove 1 from the framework waitgroup
 func (app *AgniApp) Remove_Routine() {
-	atomic.AddUint32(&app.no_of_routines, ^uint32(0))
+	app.no_of_routines.Add(^int32(0))
 	app.wgEntries.Done()
 }
 

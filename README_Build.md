@@ -1,9 +1,9 @@
 ![]()<img src="./asserts/Logo_1_transparent.png" >
-# AgniOne Application Framework .V1
+# AgniOne Application Framework V2
 
 
 ## Getting started
-Please make sure that Go (https://go.dev/) install and configured on you development PC.<br>
+Please make sure that Go 1.24 (https://go.dev/) install and configured on you development PC.<br>
 If not, please refer https://go.dev/doc/install 
 
 ### Get the source code & build step by step
@@ -20,8 +20,8 @@ If not, please refer https://go.dev/doc/install
 ```
 cd ~/AgniOneFM
 
-git clone git@github.com:agnione/libs.git
-cd ./libs/v1
+git clone -b v2 git@github.com:agnione/libs.git
+cd ./libs/v2
 
 chmod 775 ./update_local.sh
 ./update_local.sh
@@ -33,7 +33,7 @@ If not, please check your $GOROOT env variable is set.
 3. Clone the AgniOne PlugIns to your plugins folder
 ```
 cd ~/AgniOneFM/
-git clone git@github.com:agnione/plugins.git
+git clone -b v2 git@github.com:agnione/plugins.git
 ```
 3.1 Build the plugin for errors.
 
@@ -52,7 +52,7 @@ find . -name "*.sh" -exec chmod 775 {} \;
 4. Clone the AgniOne Application Framework to your project folder
 ```
 cd ~/AgniOneFM
-git clone git@github.com:agnione/agnione.git
+git clone -b v2 git@github.com:agnione/agnione.git
 cd ./agniOne
 ```
 
@@ -70,7 +70,7 @@ find . -name "*.sh" -exec chmod 775 {} \;
 ```
 cd ~/AgniOneFM
   
-git clone git@github.com:agnione/units.git
+git clone -b v2 git@github.com:agnione/units.git
 cd units
 ```
 
@@ -101,15 +101,11 @@ tail -f ~/AgniOneFM/agnione/log/*
 3. REST Monitor API <br>
    config/core.config contains the port for HTTP monitoring & Web Socket monitoring.
    ```
-   "http_monitor": {
+   "monitor": {
         "host": "0.0.0.0",
-        "port": 8080,
-        "enable": 1
+        "port": 8080
       },
-      "ws_monitor": {
-        "host": "0.0.0.0",
-        "port": 2345,
-        "enable": 1
+      
    ```
    All the HTTP REST endpoint will be hosted at http://localhost:8080
    

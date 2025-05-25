@@ -156,7 +156,7 @@ func Serve_Status(pWSHub *SSEHub, pResWriter http.ResponseWriter, pRequest *http
 
 // serveWs handles websocket requests from the peers.
 func Serve_Logger(pWSHub *SSEHub, pResWriter http.ResponseWriter, pRequest *http.Request) {
-	serve_client(pWSHub, pResWriter, pRequest, LOG_MONITOR, "log")
+	serve_client(pWSHub, pResWriter, pRequest, LOG_MONITOR, "logs")
 }
 
 // serveWs handles websocket requests from the peers.
