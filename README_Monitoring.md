@@ -47,7 +47,7 @@ In order to monitor the application real-time activities over Server Sent Events
 
 #### monitoring video capture
 <video width="600" height="400" controls>
-  <source src="agnione_monitoring.webm" type="video/webm">
+  <source src="./asserts/monitors/v/agnione_monitoring.webm" type="video/webm">
 </video>
 
 #### Monitoing API end points

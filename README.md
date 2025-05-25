@@ -1,8 +1,9 @@
 ![]()<img src="./asserts/Logo_1_transparent.png" >
-# AgniOne Application Framework .V1
+# AgniOne Application Framework .V2
+
 
 ## About
-AgniOne is a generic High Performance extendable modular application container framework for <b>Unix</b> based systems and written in <b>100% GO</b> (https://go.dev/) .<br>
+AgniOne is a generic High Performance extendable modular application container framework for <b>Unix</b> based systems and written in <b>100% GO 1.24</b> (https://go.dev/) .<br>
 Heavily based on <b>Go PlugIn</b> (https://pkg.go.dev/plugin) for its fixable implementations.
 
 It is designed and developed highly in concerns with:
@@ -20,6 +21,15 @@ It is designed and developed highly in concerns with:
 - Faster software development due to re-usable framework.
 - Low code platform, that helps small businesses to create custom software to streamline their operations quickly.
 
+
+## Improvementes over version 1
+- Upgraded to go 1.24
+- Switched to Server Sent Events monitoring over Gorrial Web Sockets
+- Lightweight (low depandancy packages)
+- Minimum Mutex locks
+- Embeded Monitoring HTML user interface
+
+
 ## Architecture
 ![]()<img src="./asserts/AgniOne_toplevel.png" width="800px" >
 
@@ -32,14 +42,14 @@ AgniOne Consists with 3 main separated components:
   - Control AgniOne Units (load,start,stop .....)
   - Provider of AgniOne plugin instances on demand for AgniOne Units
   - Controllability via built-in REST API
-  - Ability to monitor real-time activities with Web Socket on demand.
+  - Ability to monitor real-time activities with Server sent Events(SSE).
 
  
 - AgniOne PlugIns
   - Abstract of protocol implementation with desired packages and encapsulates and exports functionalities via Interfaces.
   - Unlimited expandability with plugins. <br>
         By default it comes with HTTP & Web Socket plugins.
-        Please refer to AgniOne PlugIns at https://github.com/agnione/plugins
+        Please refer to AgniOne PlugIns at https://github.com/agnione/plugins/tree/v2
   - AgniOne Framework will be creating instances of requested plugins on demand and pass those to the AgniOne Units.
   
 -  AgniOne Units
@@ -47,7 +57,7 @@ AgniOne Consists with 3 main separated components:
    - Configurable via JSON formatted config file
    - Possibility load/execute units in a pool based on the configuration. (in case of load balancing required.)   
    - Sample Demo HTTP AgniOne Units is a good guide as an implementation guide.<br>
-        Please refer to [HTTP Demo Unit] https://github.com/agnione/units
+        Please refer to [HTTP Demo Unit] https://github.com/agnione/units/tree/v2
 
 # Interaction/Integration
 ![]()<img src="./asserts/AgniOne_inegration.png" width="800px" >
@@ -65,7 +75,7 @@ It's a matter of building required AgniOne PlugIns & AgniOne Units as per busine
 
 In the Demo HTTP AgniOne Unit, it is using the AgniOne HTTP PlugIn and as uses it to fetch URLS and their responses.<br>
 
-Please refer to AgniOne HTTP Demo Unit at https://github.com/agnione/units
+Please refer to AgniOne HTTP Demo Unit at https://github.com/agnione/units/tree/v2
 
 
 ## Benifits
@@ -93,13 +103,10 @@ Please send an email to contact@agnione.net
 
 ## Credits
 - Go Language - https://go.dev/
-- Gorilla WebSocket - https://github.com/gorilla/websocket
-- Color - https://github.com/fatih/color
 - Go-Colorable - https://github.com/mattn/go-colorable
 - Go-Istatty - https://github.com/mattn/go-isatty
 - ZeroLog - https://github.com/rs/zerolog
 - Lumberjack - https://github.com/natefinch/lumberjack
-- jub0bs/cors - https://github.com/jub0bs/cors
 
 ## Contributors
 - Images courtesy of Umesha de Silva -https://www.linkedin.com/in/umesha-de-silva-14617b27a
