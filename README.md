@@ -22,7 +22,7 @@ It is designed and developed highly in concerns with:
 - Low code platform, that helps small businesses to create custom software to streamline their operations quickly.
 
 
-## Improvementes over version 1
+## V2 Improvements over version 1
 - Upgraded to go 1.24
 - Switched to Server Sent Events monitoring over Gorrial Web Sockets
 - Lightweight (low depandancy packages)
@@ -31,7 +31,7 @@ It is designed and developed highly in concerns with:
 
 
 ## Architecture
-![]()<img src="./asserts/AgniOne_toplevel.png" width="800px" >
+![]()<img src="./asserts/AgniOne_toplevelv2.png" width="800px" >
 
 AgniOne Consists with 3 main separated components:
 
@@ -91,9 +91,7 @@ Please refer to [Start Guide](./README_Build.md)
 ## TODO
 - CLI for controlling/Monitoring AgniOne via TPC/IP
 - Full control of units via HTTP & CLI
-- Load configuration via HTTP/HTTPS endpoints
 - Load AgniOne Units via HTTP/HTTP endpoints
-- ACL based on apikey over REST Control/Monitor endpoints
 
 ## License
 Apache License
