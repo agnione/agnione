@@ -46,7 +46,7 @@ In order to monitor the application real-time activities over Server Sent Events
 ![]()<a href="./asserts/monitors/status_monitor.png" target="blank"> <img src="./asserts/monitors/status_monitor.png" width="300px"></a> &nbsp;&nbsp; ![]()<a href="./asserts/monitors/log_monitor.png" target="blank"><img src="./asserts/monitors/log_monitor.png" width="300px" ></a>&nbsp;&nbsp;![]()<a href="./asserts/monitors/events_monitor.png" target="blank"><img src="./asserts/monitors/events_monitor.png" width="300px" ></a>
 
 #### monitoring video capture
-![]()<<a href="https://agnione.net/v/agnione_monitoring.webm" target="blank">video</a>
+![]()<a href="https://agnione.net/v/agnione_monitoring.webm" target="blank">video</a>
 
 #### Monitoing API end points
 Below API endpoint can be used to build custom monitoring intrafaces or integration to external applcation as feeder and act based on the received information. 
