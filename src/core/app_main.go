@@ -106,6 +106,7 @@ const MAX_BUFFEREED_CHANS = 16 //// define MAX buffeerred chan count
 type AgniApp struct {
 	started           time.Time       /// holds the application started time
 	wgEntries         *sync.WaitGroup /// instance wait group for go routines
+	wgReadyStatus     *sync.WaitGroup /// instance wait group for go status reads
 	ready_status_lock *sync.RWMutex   /// sync lock for info of application
 	ctx               *context.Context
 	SSEMonitor        *issem.SSEMonitor /// pointer web socket monitor instance
@@ -192,6 +193,7 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 
 	/// init the sync locks
 	app.wgEntries = &sync.WaitGroup{}
+	app.wgReadyStatus = &sync.WaitGroup{}
 	app.ready_status_lock = &sync.RWMutex{}
 	app.appinfo = &apptypes.AppInfo{}
 	app.appstatus = &apptypes.AppStatus{}
@@ -271,11 +273,9 @@ func (app *AgniApp) DeInitialize() {
 		}
 	}
 
-	for k := range app.appready_status.Status {
-		delete(app.appready_status.Status, k)
-	}
-
+	app.appready_status.Status.Clear()
 	app.appready_status = nil
+	app.wgReadyStatus = nil
 
 	close(app.event_message)
 	app.event_message = nil

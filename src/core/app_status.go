@@ -116,22 +116,26 @@ func (app *AgniApp) Get_App_Info() atypes.AppInfo {
 	return *app.appInfoPtr.Load()
 }
 
-func (app *AgniApp) Get_Ready_Status() *atypes.AppReady_Status {
+func (app *AgniApp) Get_Ready_Status() map[string]bool {
 
-	app.ready_status_lock.RLock()
-	defer app.ready_status_lock.RUnlock()
-
-	for k := range app.appready_status.Status {
-		delete(app.appready_status.Status, k)
-	}
-
-	app.appready_status.Status = make(map[string]bool, len(app.appUnits))
+	app.appready_status.Status.Clear()
 
 	for _, _appUnit := range app.appUnits {
-		app.appready_status.Status[_appUnit.Status().Info.Name] = _appUnit.IsReady()
+		app.wgReadyStatus.Add(1)
+		go func() {
+			defer app.wgReadyStatus.Done()
+			app.appready_status.Status.Store(_appUnit.Status().Info.Name, _appUnit.IsReady())
+		}()
 	}
 
-	return app.appready_status
+	app.wgReadyStatus.Wait()
+	_status := make(map[string]bool)
+	app.appready_status.Status.Range(func(k, v interface{}) bool {
+		_status[k.(string)] = v.(bool)
+		return true
+	})
+
+	return _status
 }
 
 func (app *AgniApp) update_units_info(pDoneChan chan bool) {
