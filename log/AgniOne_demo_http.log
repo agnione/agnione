@@ -6667,3 +6667,17 @@
 {"level":"info","time":"2025-05-25T09:46:48+02:00","message":"Stopping HTTP monitoring server........"}
 {"level":"info","time":"2025-05-25T09:46:52+02:00","message":"stopping the status broadcasting SSE"}
 {"level":"info","time":"2025-05-25T09:46:52+02:00","message":"broadcasting status via SSE stopped"}
+{"level":"info","time":"2025-06-06T20:02:09+02:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-06-06T20:02:09+02:00","message":"Found 1 pool setting for appunit Http_demo"}
+{"level":"error","time":"2025-06-06T20:02:09+02:00","message":"Failed to load AgniOne Http_demo - /media/ajith/work/developments/go/AgniOne/GitHub4/agnione/apps/units/demohttp.so. plugin.Open(\"/media/ajith/work/developments/go/AgniOne/GitHub4/agnione/apps/units/demohttp.so\"): realpath failed"}
+{"level":"warn","time":"2025-06-06T20:02:09+02:00","message":"No AgniOne Units loaded"}
+{"level":"info","time":"2025-06-06T20:02:10+02:00","message":"starting HTTP monitoring ......"}
+{"level":"info","time":"2025-06-06T20:02:10+02:00","message":"HTTP monitoring started on 127.0.0.1:8080"}
+{"level":"info","time":"2025-06-06T20:02:12+02:00","message":"broadcasting event messages via SSE started"}
+{"level":"info","time":"2025-06-06T20:02:12+02:00","message":"broadcasting status via SSE started"}
+{"level":"info","time":"2025-06-06T20:02:12+02:00","message":"broadcasting log messages via SSE started"}
+{"level":"info","time":"2025-06-06T20:05:31+02:00","message":"Application Framework stopped called......"}
+{"level":"info","time":"2025-06-06T20:05:31+02:00","message":"No AppUnits loaded"}
+{"level":"info","time":"2025-06-06T20:05:31+02:00","message":"Stopping SSE monitoring ........"}
+{"level":"info","time":"2025-06-06T20:05:31+02:00","message":"Stopping SSE monitoring ....... DONE"}
+{"level":"info","time":"2025-06-06T20:05:31+02:00","message":"Stopping HTTP monitoring server........"}

@@ -24,10 +24,10 @@ It is designed and developed highly in concerns with:
 
 ## V2 Improvements over version 1
 - Upgraded to go 1.24
-- Switched to Server Sent Events monitoring over Gorrial Web Sockets
-- Lightweight (low depandancy packages)
+- Switched to Server Sent Events monitoring over Gorilla Web Sockets
+- Lightweight (low dependency packages)
 - Minimum Mutex locks
-- Embeded Monitoring HTML user interface
+- Embedded Monitoring HTML user interface
 
 
 ## Architecture
@@ -64,7 +64,7 @@ AgniOne Consists with 3 main separated components:
 
 ## Usage
 AgniOne Application Framework + AgniOne PlugIns + AgniOne Units can be used to build any type of applications such as
-- Unattened high performance backend applications to perform specific tasks
+- Unattended high performance backend applications to perform specific tasks
 - HTTP Servers/Clients
 - Web Socket Servers/Clients for real-time streaming
 - MQ Clients
@@ -78,7 +78,7 @@ In the Demo HTTP AgniOne Unit, it is using the AgniOne HTTP PlugIn and as uses i
 Please refer to AgniOne HTTP Demo Unit at https://github.com/agnione/units/tree/v2
 
 
-## Benifits
+## Benefits
 Using the AgniOne Application framework, software development time can be cut down to a significant amount, because it is only required to re-use AgniOne Plugins and build AgniOne Units.
 
 Basically, when the AgniOne Plugins (as per requirements) are developed, AgniOne Unit will be utilizing those afterwards.

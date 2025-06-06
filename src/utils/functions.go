@@ -13,7 +13,7 @@
 						See the License for the specific language governing permissions and
 						limitations under the License.
 
-# Class/module  :   utulity functions
+# Class/module  :   utility functions
 
 # Objective     :   package collection of utility functions for the framework
 
@@ -48,41 +48,34 @@ func FormatByteSize(byte_size uint64) string {
 	return fmt.Sprintf("%.1fYiB", bf)
 }
 
-
-
-
 // RunCMD is a simple wrapper around terminal commands
 func run_cmd(path string, args []string) (out string, err error) {
 
-    cmd := exec.Command(path, args...)
+	cmd := exec.Command(path, args...)
 
-    var b []byte
-	
-	defer func(){
-		if _r:=recover();_r!=nil{
-			fmt.Println("Recovered panic ",_r)
-			_r=nil
+	var b []byte
+
+	defer func() {
+		if _r := recover(); _r != nil {
+			fmt.Println("Recovered panic ", _r)
+			_r = nil
 		}
-		
-		b=nil
-		cmd=nil
+
+		b = nil
+		cmd = nil
 	}()
-	
-    b, err = cmd.CombinedOutput()
-    return string(b),err
+
+	b, err = cmd.CombinedOutput()
+	return string(b), err
 }
-
-
 
 // Execute_Command executes the given OS command and returns result
 func Execute_Command(command string) (string, error) {
-	if len(command)==0{
-		return "",fmt.Errorf("command can not be empty")
+	if len(command) == 0 {
+		return "", fmt.Errorf("command can not be empty")
 	}
-	
-	_params:=strings.Split(command, " ")
+
+	_params := strings.Split(command, " ")
 	return run_cmd(_params[0], _params[1:])
 
-	
-	
 }

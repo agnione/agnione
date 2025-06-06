@@ -15,27 +15,17 @@
 #########################################################################################
 
 	Author        :   D. Ajith Nilantha de Silva contact@agnione.net | 24/01/2024
-
 	Class/module  :   WSClient
-
 	Objective     :   Define the package for support web socket client connections
-
 	This package has functions to read and write features to connected client
-
 #########################################################################################
-
 	Author                 	Date        	Action      	Description
-
 -----------------------------------------------------------------------------------------------------------------
-
 	Ajith de Silva		24/01/2024	Created 	Created the initial version
-
 	Ajith de Silva		29/01/2024	Updated 	Defined functions with parameters & return values
-
 	Ajith de Silva		29/01/2024	Updated 	Implemented functions
-
 	Ajith de Silva		01/02/2024	Added 		Added the status endpoint to monitor status vis web socket
-
+	Ajith de Silva		06/06/2025	Updated 	Updated the package to use sync.Map for client management
 #########################################################################################
 */
 package ssehandler

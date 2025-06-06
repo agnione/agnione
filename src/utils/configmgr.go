@@ -1,4 +1,4 @@
-// utils package provides all the untility functions for kandy application framework
+// utils package provides all the utility functions for AgniOne application framework
 //
 // Configuration functions:
 //			- LoadMainConfiguration
@@ -64,7 +64,7 @@ import (
 	"errors"
 )
 
-// / LoadCoreConfiguration laods the core configuration
+// / LoadCoreConfiguration loads the core configuration
 func LoadCoreConfiguration(filename *string) (*apptypes.FMConfig, error) {
 
 	_file, _err := GetFilePtr(filename)
@@ -73,22 +73,22 @@ func LoadCoreConfiguration(filename *string) (*apptypes.FMConfig, error) {
 		return nil, _err
 	}
 	_config := &apptypes.FMConfig{}
-	defer func ()  {
+	defer func() {
 		_file.Close()
 		_file = nil
-		_err=nil
+		_err = nil
 	}()
-	
-	_err= json.NewDecoder(_file).Decode(_config)
-	
+
+	_err = json.NewDecoder(_file).Decode(_config)
+
 	if _err != nil {
-		return nil,errors.New("Error decoding JSON data: " +  _err.Error())
+		return nil, errors.New("Error decoding JSON data: " + _err.Error())
 	}
 
 	return _config, nil /// all good.
 }
 
-// / loadAppConfiguration laods the application configuration
+// / loadAppConfiguration loads the application configuration
 func LoadAppConfiguration(filename *string) (*apptypes.AppConfig, error) {
 
 	_file, _err := GetFilePtr(filename)
@@ -96,21 +96,19 @@ func LoadAppConfiguration(filename *string) (*apptypes.AppConfig, error) {
 	if _err != nil {
 		return nil, _err
 	}
-	
+
 	_appConfig := &apptypes.AppConfig{}
-	
-	defer func ()  {
+
+	defer func() {
 		_file.Close()
 		_file = nil
-		_err=nil
+		_err = nil
 	}()
-	
+
 	_err = json.NewDecoder(_file).Decode(_appConfig)
-	
+
 	if _err != nil {
-		return nil, errors.New("Error decoding JSON data: " +  _err.Error())
+		return nil, errors.New("Error decoding JSON data: " + _err.Error())
 	}
 	return _appConfig, nil /// all good.
 }
-
-

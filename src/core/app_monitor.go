@@ -11,7 +11,7 @@
 //						WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //						See the License for the specific language governing permissions and
 //						limitations under the License.
-// Class/module  :   Kandy Application Framework - Core Monitor Implementation
+// Class/module  :   AgniOne Application Framework - Core Monitor Implementation
 // Objective     :   Define common package for Application that work as a container for the business objects.
 //					This package will to export plugins/libraries to the business objects, so that will helps
 //					business objects to implements it's features by using the framework support
@@ -92,7 +92,7 @@ func (app *AgniApp) Send_Event(pMessage string) {
 // broadcast_status broadcast the application status via sse monitoring
 func (app *AgniApp) broadcast_status_messages() {
 
-	time.Sleep(2 * time.Second) /// set delay to init
+	time.Sleep(1500 * time.Millisecond) /// set delay to init
 
 	defer func() {
 		if _r := recover(); _r != nil {
@@ -109,7 +109,7 @@ func (app *AgniApp) broadcast_status_messages() {
 	}
 
 	var _statusmsg []byte
-	_ticker := time.NewTicker(5 * time.Second)
+	_ticker := time.NewTicker(1 * time.Minute)
 
 	defer func() {
 		_ticker.Stop()
@@ -211,7 +211,7 @@ func (app *AgniApp) broadcast_log_messages() {
 					return
 				}
 
-				if app.SSEMonitor.MonitorClientsCount() > 0 && len(_sseEvent.Message) > 0 {
+				if app.SSEMonitor.LogClientsCount() > 0 && len(_sseEvent.Message) > 0 {
 					_sseEvent.ID = time.Microsecond.String()
 					app.SSEMonitor.Broadcast_Log(_sseEvent) /// broadcasts received log message
 				}

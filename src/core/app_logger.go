@@ -11,7 +11,7 @@
 //						See the License for the specific language governing permissions and
 //						limitations under the License.
 //
-// Class/module  :   Kandy Application Framework - Core Logger Implementation
+// Class/module  :   AgniOne Application Framework - Core Logger Implementation
 //
 // Objective     :   Define common package for Application that work as a container for the business objects.
 //					This package will to export plugins/libraries to the business objects, so that will helps
@@ -21,7 +21,7 @@
 //------------------------------------------------------------------------------------------------------
 // Ajith de Silva				26/01/2024	Created 	Created the initial version
 // Ajith de Silva				29/01/2024	Updated 	Defined functions with parameters & return values
-// Ajith de Silva				29/01/2024	Added 		Added the Write2Log method with loglevel parameter
+// Ajith de Silva				29/01/2024	Added 		Added the Write2Log method with log level parameter
 // Ajith de Silva 				09/04/2024  Optimized   optimized the write log function
 // 														Added the log message broadcast to log function
 //#################################################################################################################

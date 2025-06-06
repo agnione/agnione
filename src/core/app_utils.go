@@ -13,7 +13,7 @@
 //						See the License for the specific language governing permissions and
 //						limitations under the License.
 //
-// Class/module  :   Kandy Application Framework - utility functions
+// Class/module  :   AgniOne Application Framework - utility functions
 //
 // Objective     :   Define common utility functions for Application that work.
 //					This package will to export app units objects, so that will helps
@@ -94,11 +94,9 @@ func (app *AgniApp) LoadCoreConfiguration(pFilename *string) (*apptypes.FMConfig
 func (app *AgniApp) LoadMainConfiguration(filename *string) (*apptypes.MainConfig, error) {
 	return autls.LoadMainConfiguration(filename)
 }
-	*/
-
+*/
 
 // / loadAppConfiguration loads the application specific configuration
 func (app *AgniApp) LoadAppConfiguration(pFilename *string) (*apptypes.AppConfig, error) {
 	return autls.LoadAppConfiguration(pFilename)
 }
-

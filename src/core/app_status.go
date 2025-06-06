@@ -13,7 +13,7 @@
 //						See the License for the specific language governing permissions and
 //						limitations under the License.
 //
-// Class/module  :   Kandy Application Framework - Core Status Implementation
+// Class/module  :   AgniOne Application Framework - Core Status Implementation
 //
 // Objective     :   Define common package for Application that work as a container for the business objects.
 //					This package will to export plugins/libraries to the business objects, so that will helps
@@ -155,8 +155,12 @@ func (app *AgniApp) update_units_info(pDoneChan chan bool) {
 
 func (app *AgniApp) read_memory_usage(pDoneChan chan bool) {
 
-	var _currentMem runtime.MemStats
-	runtime.ReadMemStats(&_currentMem)
+	_currentMem := app.memStatus.Get().(*runtime.MemStats)
+	runtime.ReadMemStats(_currentMem)
+
+	defer func() {
+		app.memStatus.Put(_currentMem)
+	}()
 
 	if _currentMem.Alloc > app.last_mem_usage.Heap {
 		app.last_mem_usage.Heap = _currentMem.Alloc - app.last_mem_usage.Heap
@@ -243,7 +247,7 @@ func (app *AgniApp) Update_Status_Process() {
 		app.Remove_Routine()
 	}()
 
-	_ticker := time.NewTicker(time.Second * 5)
+	_ticker := time.NewTicker(time.Minute * 5)
 
 	defer func() {
 		_ticker.Stop()

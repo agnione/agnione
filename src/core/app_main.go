@@ -85,6 +85,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -104,19 +105,19 @@ const MAX_BUFFEREED_CHANS = 16 //// define MAX buffeerred chan count
 
 // struct to hold the framework instance data
 type AgniApp struct {
-	started           time.Time       /// holds the application started time
-	wgEntries         *sync.WaitGroup /// instance wait group for go routines
-	wgReadyStatus     *sync.WaitGroup /// instance wait group for go status reads
-	ready_status_lock *sync.RWMutex   /// sync lock for info of application
-	ctx               *context.Context
-	SSEMonitor        *issem.SSEMonitor /// pointer web socket monitor instance
-	HTTPMonitor       *ihttpm.HttpMonitor
-	appconfig         *apptypes.AppConfig /// pointer for application configuration
-	coreconfig        *apptypes.FMConfig  /// pointer for application configuration
+	started       time.Time       /// holds the application started time
+	wgEntries     *sync.WaitGroup /// instance wait group for go routines
+	wgReadyStatus *sync.WaitGroup /// instance wait group for go status reads
 
-	logger   *logger.ALogger
-	appUnits []iappunit.IAppUnit /// pool to hold the application units
+	ctx         *context.Context
+	SSEMonitor  *issem.SSEMonitor /// pointer web socket monitor instance
+	HTTPMonitor *ihttpm.HttpMonitor
+	appconfig   *apptypes.AppConfig /// pointer for application configuration
+	coreconfig  *apptypes.FMConfig  /// pointer for application configuration
 
+	logger          *logger.ALogger
+	appUnits        []iappunit.IAppUnit /// pool to hold the application units
+	memStatus       *sync.Pool
 	appunit_info    []apptypes.AppUnitInfo
 	appinfo         *apptypes.AppInfo
 	appstatus       *apptypes.AppStatus
@@ -192,9 +193,14 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 	/// init the sync locks
 	app.wgEntries = &sync.WaitGroup{}
 	app.wgReadyStatus = &sync.WaitGroup{}
-	app.ready_status_lock = &sync.RWMutex{}
 	app.appinfo = &apptypes.AppInfo{}
 	app.appstatus = &apptypes.AppStatus{}
+
+	app.memStatus = &sync.Pool{
+		New: func() any {
+			return &runtime.MemStats{}
+		},
+	}
 
 	/// set the appication name and version
 	app.name = app.appconfig.App.Name
@@ -288,8 +294,8 @@ func (app *AgniApp) DeInitialize() {
 		app.HTTPMonitor.DeInitialize()
 	}
 
-	/// clear all varaibales -
-
+	/// clear all variables -
+	app.memStatus = nil
 	app.appconfig = nil
 	app.coreconfig = nil
 
@@ -301,7 +307,7 @@ func (app *AgniApp) DeInitialize() {
 	app.stopStatus = nil
 
 	app.appUnits = nil
-	app.ready_status_lock = nil
+
 	app.appunit_info = nil
 
 	app.console_entry = nil

@@ -23,20 +23,25 @@
 // Ajith de Silva				25/01/2024	Created 	Created the initial version
 // Ajith de Silva				25/01/2024	Addes    	Added function to enable boradcasting message
 // Ajith de Silva				29/01/2024	Added 		Added function to return the web socket client count
-// Ajith de Silva				01/02/2024	Added 		Added startus monitor related features
+// Ajith de Silva				01/02/2024	Added 		Added status monitor related features
+// Ajith de Silva				06/06/2025	Updated 	Updated the package to use sync.Map for client management
 //#########################################################################################
 
 package ssehandler
 
-import "log"
+import (
+	"log"
+	"sync"
+	"sync/atomic"
+)
 
 const MAX_CLIENTS = 50 //// define MAX clients to 20 per topic
 
 // Hub maintains the set of active clients and broadcasts messages to the clients.
 type SSEHub struct {
-	lclients map[*SSEClient]bool // log reader clients.
-	mclients map[*SSEClient]bool // monitoring clients.
-	sclients map[*SSEClient]bool // status clients.
+	lclients sync.Map // log reader clients.
+	mclients sync.Map // monitoring clients.
+	sclients sync.Map // status clients.
 
 	broadcast_monitor chan *SSE_Event // outboud message to boradcast
 	broadcast_status  chan *SSE_Event // outboud status message to boradcast
@@ -46,9 +51,9 @@ type SSEHub struct {
 
 	logger              *log.Logger
 	stopped             chan bool
-	event_client_count  uint8
-	status_client_count uint8
-	log_client_count    uint8
+	event_client_count  atomic.Int32
+	status_client_count atomic.Int32
+	log_client_count    atomic.Int32
 }
 
 func NewHub(pLogger *log.Logger) *SSEHub {
@@ -61,14 +66,11 @@ func NewHub(pLogger *log.Logger) *SSEHub {
 		register:   make(chan *SSEClient),
 		unregister: make(chan *SSEClient),
 
-		mclients:            make(map[*SSEClient]bool),
-		sclients:            make(map[*SSEClient]bool),
-		lclients:            make(map[*SSEClient]bool),
-		stopped:             make(chan bool),
-		logger:              pLogger,
-		event_client_count:  0,
-		status_client_count: 0,
-		log_client_count:    0,
+		mclients: sync.Map{}, // activity clients
+		sclients: sync.Map{}, // status clients
+		lclients: sync.Map{}, // log clients
+		stopped:  make(chan bool),
+		logger:   pLogger,
 	}
 }
 
@@ -83,30 +85,26 @@ func (h *SSEHub) DeInitialize() {
 }
 
 func (h *SSEHub) clear_clients() {
-	for s := range h.mclients {
-		delete(h.mclients, s)
-	}
-	h.mclients = nil
 
-	for s := range h.lclients {
-		delete(h.lclients, s)
-	}
-	h.lclients = nil
+	h.lclients.Range(func(key any, value any) bool {
+		h.mclients.Delete(key)
+		return true
+	})
 
-	for s := range h.sclients {
-		delete(h.sclients, s)
-	}
-	h.sclients = nil
+	h.sclients.Range(func(key any, value any) bool {
+		h.mclients.Delete(key)
+		return true
+	})
 
-	h.event_client_count = 0
-	h.status_client_count = 0
-	h.log_client_count = 0
+	h.event_client_count.Store(0)
+	h.status_client_count.Store(0)
+	h.log_client_count.Store(0)
 
 }
 
 // Run executes the main functionality of the Hub.
 // It manages the new client registrations, client unregistrations.
-// Also breadcasting messages among web scokcet clients
+// Also breadcasting messages among web socket clients
 func (h *SSEHub) Run() {
 
 	var _client *SSEClient
@@ -117,89 +115,96 @@ func (h *SSEHub) Run() {
 
 	}()
 
+	h.event_client_count.Store(0)
+	h.status_client_count.Store(0)
+	h.log_client_count.Store(0)
+
 	for {
 		select {
 
 		case <-h.stopped: /// if stop requested
 			h.clear_clients()
-
 			return
 
 		case _client = <-h.register: /// if new client connects
-			{
-				switch _client.Monitor_Type {
-
-				case ACTIVITY_MONITOR:
-					if MAX_CLIENTS > h.event_client_count+1 {
-						h.mclients[_client] = true
-						h.event_client_count++
-					} else {
-						_client = nil
-					}
-				case STAUS_MONITOR:
-					if MAX_CLIENTS > h.status_client_count+1 {
-						h.sclients[_client] = true
-						h.status_client_count++
-					} else {
-						_client = nil
-					}
-				case LOG_MONITOR:
-					if MAX_CLIENTS > h.log_client_count+1 {
-						h.lclients[_client] = true
-						h.log_client_count++
-					} else {
-						_client = nil
-					}
-				}
-			}
-			_client = nil
+			h.register_client(_client)
 
 		case _client = <-h.unregister: /// if client disconnects
 
 			/// do the decrent of client count based on the client type
-			switch _client.Monitor_Type {
-			case ACTIVITY_MONITOR:
-				if _, _ok := h.mclients[_client]; _ok {
-					h.mclients[_client] = false
-					delete(h.mclients, _client)
-					close(_client.event_message)
-					h.event_client_count--
-				}
-
-			case STAUS_MONITOR:
-				if _, _ok := h.sclients[_client]; _ok {
-					h.sclients[_client] = false
-					delete(h.sclients, _client)
-					close(_client.event_message)
-					h.status_client_count--
-				}
-
-			case LOG_MONITOR:
-				if _, _ok := h.lclients[_client]; _ok {
-					h.lclients[_client] = false
-					delete(h.lclients, _client)
-					close(_client.event_message)
-					h.log_client_count--
-				}
-
-			}
+			h.unregistre_client(_client)
 
 		case _message = <-h.broadcast_monitor: /// if broadcast message is requested
 
-			for __client := range h.mclients {
-				__client.event_message <- _message
-			}
+			h.mclients.Range(func(key any, value any) bool {
+				key.(*SSEClient).event_message <- _message
+				return true
+			})
 
 		case _message = <-h.broadcast_status: /// if broadcast status is requested
-			for __client := range h.sclients {
-				__client.event_message <- _message
-			}
+			h.sclients.Range(func(key any, value any) bool {
+				key.(*SSEClient).event_message <- _message
+				return true
+			})
 
 		case _message = <-h.broadcast_log: /// if broadcast log entries is requested
 
-			for __client := range h.lclients {
-				__client.event_message <- _message
-			}
+			h.lclients.Range(func(key any, value any) bool {
+				key.(*SSEClient).event_message <- _message
+				return true
+			})
+		}
+	}
+}
+
+func (h *SSEHub) unregistre_client(_client *SSEClient) {
+
+	defer recover()
+	switch _client.Monitor_Type {
+	case ACTIVITY_MONITOR:
+		if _, _ok := h.mclients.Load(_client); _ok {
+			h.mclients.Delete(_client)
+			close(_client.event_message)
+			h.event_client_count.Add(^int32(0))
+		}
+
+	case STAUS_MONITOR:
+		if _, _ok := h.sclients.Load(_client); _ok {
+			h.sclients.Delete(_client)
+			close(_client.event_message)
+			h.status_client_count.Add(^int32(0))
+		}
+
+	case LOG_MONITOR:
+		if _, _ok := h.lclients.Load(_client); _ok {
+			h.lclients.Delete(_client)
+			close(_client.event_message)
+			h.log_client_count.Add(^int32(0))
+		}
+
+	}
+}
+
+func (h *SSEHub) register_client(_client *SSEClient) {
+
+	defer recover()
+
+	switch _client.Monitor_Type {
+
+	case ACTIVITY_MONITOR:
+		if MAX_CLIENTS > h.event_client_count.Load()+1 {
+			h.mclients.Store(_client, true)
+			h.event_client_count.Add(1)
+		}
+	case STAUS_MONITOR:
+		if MAX_CLIENTS > h.status_client_count.Load()+1 {
+			h.sclients.Store(_client, true)
+			h.status_client_count.Add(1)
+		}
+	case LOG_MONITOR:
+		if MAX_CLIENTS > h.log_client_count.Load()+1 {
+			h.lclients.Store(_client, true)
+			h.log_client_count.Add(1)
 		}
 	}
 }
@@ -221,18 +226,18 @@ func (h *SSEHub) Broadcast_Log(pMessage SSE_Event) {
 
 // ClientsCount returns the connected web socket client count for monitor end point
 func (h *SSEHub) Event_Clients_Count() uint8 {
-	return h.event_client_count
+	return uint8(h.event_client_count.Load())
 }
 
 // StatusClientsCount returns the connected web socket client count for status endpoint
 func (h *SSEHub) Status_Clients_Count() uint8 {
-	return h.status_client_count
+	return uint8(h.status_client_count.Load())
 
 }
 
 // LogClientsCount returns the connected web socket client count for log endpoint
 func (h *SSEHub) Log_Clients_Count() uint8 {
-	return h.log_client_count
+	return uint8(h.log_client_count.Load())
 
 }
 

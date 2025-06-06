@@ -1,7 +1,7 @@
-// main package provides launcher for Kandy application framework
+// main package provides launcher for AgniOne application framework
 //
-//  - Creates an instance of Agni Application Framework
-//	- Initialize and starts the Agni
+//  - Creates an instance of AgniOne Application Framework
+//	- Initialize and starts the AgniOne
 //	- Watch OS Intercept signals and stops the running Agni instance
 //
 // This package includes functions:
@@ -28,7 +28,7 @@
 
 	Class/module  :  app
 
-	Objective     :  Provide the application launcher/shell to start the KAndy Application Framework
+	Objective     :  Provide the application launcher/shell to start the AgniOne Application Framework
 	 		  			main entry of the KAF
 #######################################################################################################################
 
@@ -82,13 +82,15 @@ func GetBasePath() *string {
 	if _err != nil {
 		_curDir, _ = os.Executable()
 		_curDir = filepath.Dir(_curDir) + "/"
+	} else {
+		_curDir = "."
 	}
 
 	return &_curDir
 }
 
-// signaleHandler wait for the interrupt signal to support graceful shutdown.
-func SignaleHandler() {
+// SignalHandler wait for the interrupt signal to support graceful shutdown.
+func SignalHandler() {
 	<-ctx.Done()
 	println("*********************************\nShutdown Signal Received\n*********************************")
 }
@@ -109,7 +111,7 @@ func Filter_Number(value string) int {
 }
 
 func usage() {
-	println("usage: app --main_path <app_base_path> --log_path <app_log_path> --app_path <app_config_path>  --restport <8880>  --wsport <23450> --cpucount 4")
+	println("usage: app --main_path <app_base_path> --log_path <app_log_path> --app_path <app_config_path>  --restport <8880> --cpucount 4")
 	flag.PrintDefaults()
 	println("\n** if main_path is not given then application will use the '<executable_folder>' as main_path by default.")
 	println("** if log_path is not given then application will use the pre-set paths in config file")
@@ -203,7 +205,7 @@ start:
 	println("using app log path\t: " + *log_path)
 	println("using app unit path\t: " + *app_path + "\n")
 
-	println("\nInitialzing AgniOne ......")
+	println("\nInitialing AgniOne ......")
 	agniApp = new(agni.AgniApp)
 
 	/// create the cancellation application context
@@ -231,7 +233,7 @@ start:
 		termChan = nil
 	}()
 
-	go SignaleHandler() /// starts the interrupt signal handler
+	go SignalHandler() /// starts the interrupt signal handler
 
 	println("Starting ::" + agniApp.Name() + " (" + agniApp.ID() + ") - " + agniApp.Version())
 
