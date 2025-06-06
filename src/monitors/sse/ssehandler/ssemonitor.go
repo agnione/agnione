@@ -14,7 +14,7 @@ type SSEMonitor struct {
 	initialized bool /// flag to set the start/stop status
 }
 
-// Initialize initilizes the Initialize intance with default values.
+// Initialize initializes the Initialize instance with default values.
 // websocket.Upgrader with ReadBufferSize:1024,	WriteBufferSize:1024 and EnableCompression:true
 func (ssem *SSEMonitor) Initialize(pLogger *log.Logger) bool {
 
@@ -52,19 +52,19 @@ func (ssem *SSEMonitor) IsStarted() bool {
 	return ssem.isstarted
 }
 
-// BroadCast boradcasts a message among to the clients who connected to the monitor endpoint
+// BroadCast broadcasts a message among to the clients who connected to the monitor endpoint
 func (ssem *SSEMonitor) Broadcast_Event(pMessage SSE_Event) {
 	defer recover()
 	ssem.sseHub.Broadcast_Event(pMessage)
 }
 
-// BroadCastStatus boradcsasts message to the clients who connected to the status endpoint
+// BroadCastStatus broadcasts message to the clients who connected to the status endpoint
 func (ssem *SSEMonitor) Broadcast_Status(pMessage SSE_Event) {
 	defer recover()
 	ssem.sseHub.Broadcast_Status(pMessage)
 }
 
-// BroadCast boradcasts a message among to the clients connected to the monitor endpoint
+// BroadCast broadcasts a message among to the clients connected to the monitor endpoint
 func (ssem *SSEMonitor) Broadcast_Log(pMessage SSE_Event) {
 	defer recover()
 	ssem.sseHub.Broadcast_Log(pMessage)

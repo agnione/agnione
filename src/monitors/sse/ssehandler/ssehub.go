@@ -14,14 +14,14 @@
 //
 // Class/module  :   WsHub
 //
-// Objective     :   Define the centerlize hub for web socket client management
-//					This package will be used to mamange the web socket clients and broadcase message
+// Objective     :   Define the centralize hub for web socket client management
+//					This package will be used to manage the web socket clients and broadcast message
 //					among clients.
 //#########################################################################################
 // Author                        Date        Action      Description
 //------------------------------------------------------------------------------------------------------------
 // Ajith de Silva				25/01/2024	Created 	Created the initial version
-// Ajith de Silva				25/01/2024	Addes    	Added function to enable boradcasting message
+// Ajith de Silva				25/01/2024	Added    	Added function to enable broadcasting message
 // Ajith de Silva				29/01/2024	Added 		Added function to return the web socket client count
 // Ajith de Silva				01/02/2024	Added 		Added status monitor related features
 // Ajith de Silva				06/06/2025	Updated 	Updated the package to use sync.Map for client management
@@ -43,9 +43,9 @@ type SSEHub struct {
 	mclients sync.Map // monitoring clients.
 	sclients sync.Map // status clients.
 
-	broadcast_monitor chan *SSE_Event // outboud message to boradcast
-	broadcast_status  chan *SSE_Event // outboud status message to boradcast
-	broadcast_log     chan *SSE_Event // outboud log entries to boradcast
+	broadcast_monitor chan *SSE_Event // outbound message to broadcast
+	broadcast_status  chan *SSE_Event // outbound status message to broadcast
+	broadcast_log     chan *SSE_Event // outbound log entries to broadcast
 	register          chan *SSEClient // Register requests from the clients.
 	unregister        chan *SSEClient // Unregister requests from clients.
 
@@ -57,7 +57,7 @@ type SSEHub struct {
 }
 
 func NewHub(pLogger *log.Logger) *SSEHub {
-	/// create a new instace of the WSHub
+	/// create a new instance of the WSHub
 	return &SSEHub{
 		broadcast_monitor: make(chan *SSE_Event),
 		broadcast_status:  make(chan *SSE_Event),
@@ -104,7 +104,7 @@ func (h *SSEHub) clear_clients() {
 
 // Run executes the main functionality of the Hub.
 // It manages the new client registrations, client unregistrations.
-// Also breadcasting messages among web socket clients
+// Also broadcasting messages among web socket clients
 func (h *SSEHub) Run() {
 
 	var _client *SSEClient
@@ -131,8 +131,8 @@ func (h *SSEHub) Run() {
 
 		case _client = <-h.unregister: /// if client disconnects
 
-			/// do the decrent of client count based on the client type
-			h.unregistre_client(_client)
+			/// do the decrement of client count based on the client type
+			h.unregister_client(_client)
 
 		case _message = <-h.broadcast_monitor: /// if broadcast message is requested
 
@@ -157,7 +157,7 @@ func (h *SSEHub) Run() {
 	}
 }
 
-func (h *SSEHub) unregistre_client(_client *SSEClient) {
+func (h *SSEHub) unregister_client(_client *SSEClient) {
 
 	defer recover()
 	switch _client.Monitor_Type {
@@ -168,7 +168,7 @@ func (h *SSEHub) unregistre_client(_client *SSEClient) {
 			h.event_client_count.Add(^int32(0))
 		}
 
-	case STAUS_MONITOR:
+	case STATUS_MONITOR:
 		if _, _ok := h.sclients.Load(_client); _ok {
 			h.sclients.Delete(_client)
 			close(_client.event_message)
@@ -196,7 +196,7 @@ func (h *SSEHub) register_client(_client *SSEClient) {
 			h.mclients.Store(_client, true)
 			h.event_client_count.Add(1)
 		}
-	case STAUS_MONITOR:
+	case STATUS_MONITOR:
 		if MAX_CLIENTS > h.status_client_count.Load()+1 {
 			h.sclients.Store(_client, true)
 			h.status_client_count.Add(1)
@@ -209,17 +209,17 @@ func (h *SSEHub) register_client(_client *SSEClient) {
 	}
 }
 
-// BroadCast boradcasts message among connected websocket clients
+// BroadCast broadcasts message among connected websocket clients
 func (h *SSEHub) Broadcast_Event(pMessage SSE_Event) {
 	h.broadcast_monitor <- &pMessage
 }
 
-// BroadCast boradcast status message among connected websocket clients
+// BroadCast broadcasts status message among connected websocket clients
 func (h *SSEHub) Broadcast_Status(pMessage SSE_Event) {
 	h.broadcast_status <- &pMessage
 }
 
-// BroadCast boradcast log entries among connected websocket clients
+// BroadCast broadcasts log entries among connected websocket clients
 func (h *SSEHub) Broadcast_Log(pMessage SSE_Event) {
 	h.broadcast_log <- &pMessage
 }

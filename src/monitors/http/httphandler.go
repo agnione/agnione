@@ -1,7 +1,7 @@
 /*
 #########################################################################################
 
-	Author        :   D. Ajith Nilantha de Silva contact@agnione.net | 26/01/2024	Copyright     :   contact@agnione.net
+	Author        :   D. Ajith Nilantha de Silva contact@agnione.net | 26/01/2024	Copyright agnione.net
 	Class/module  :   httpmonitor
 	Objective     :   Ability to monitor and control the application via HTTP/REST protocol
 
@@ -48,7 +48,7 @@ type HttpMonitor struct {
 	appInstance        iappfw.IAgniApp
 	httpServerExitDone *sync.WaitGroup
 	sseMonitor         *ssehandler.SSEMonitor
-	apikeys            *[]string
+	apikeys            map[string]bool
 	cors               *[]string
 	httpServer         *http.Server
 	httpAddr           string
@@ -64,13 +64,18 @@ func (hm *HttpMonitor) Initialize(pApp_Instance iappfw.IAgniApp) {
 	hm.appInstance = pApp_Instance
 	hm.httpServerExitDone = &sync.WaitGroup{}
 
-	var _err error
-
 	var _temp_path = *hm.appInstance.App_Path() + "config/apikeys.config"
 	/// load the api keys to REST authentication
-	hm.apikeys, _err = hm.appInstance.Get_FileContent_Lines(&_temp_path)
+
+	_fileData, _err := hm.appInstance.Get_FileContent_Lines(&_temp_path)
+
 	if _err != nil {
 		hm.appInstance.Write2Log("HTTP Monitor :: failed to read the "+_temp_path+" - "+_err.Error(), apptypes.LOG_ERROR)
+	}
+	hm.apikeys = make(map[string]bool, len(*_fileData))
+
+	for _, _entry := range *_fileData {
+		hm.apikeys[_entry] = true
 	}
 
 	_temp_path = *hm.appInstance.App_Path() + "config/cores.config"
@@ -92,10 +97,14 @@ func (hm *HttpMonitor) Initialize(pApp_Instance iappfw.IAgniApp) {
 
 func (hm *HttpMonitor) DeInitialize() {
 	hm.appInstance = nil
-	hm.apikeys = nil
 	hm.httpServerExitDone = nil
 	hm.httpServer = nil
 
+	for k := range hm.apikeys {
+		delete(hm.apikeys, k)
+	}
+
+	hm.apikeys = nil
 	if hm.sseMonitor != nil {
 		hm.sseMonitor.DeInitialize()
 		hm.sseMonitor = nil
@@ -163,13 +172,9 @@ func (hm *HttpMonitor) is_authorized(pRequest *http.Request) bool {
 		return false
 	}
 
-	var _value string
-	for _, _value = range *hm.apikeys {
-		if _value == _apiKey {
-			return true
-		}
+	if hm.apikeys[_apiKey] {
+		return true
 	}
-
 	return false
 }
 

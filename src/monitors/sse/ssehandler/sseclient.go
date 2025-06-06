@@ -40,7 +40,7 @@ import (
 type MonitorLevel int8
 
 const (
-	STAUS_MONITOR    MonitorLevel = 0
+	STATUS_MONITOR   MonitorLevel = 0
 	LOG_MONITOR      MonitorLevel = 1
 	ACTIVITY_MONITOR MonitorLevel = 2
 )
@@ -57,8 +57,8 @@ type SSEClient struct {
 	res_controller *http.ResponseController // The websocket connection.
 	context        context.Context
 	event_message  chan *SSE_Event // Buffered channel of outbound messages.
+	event_name     string
 	Monitor_Type   MonitorLevel
-	envnt_name     string
 }
 
 // writer pumps messages from the pWSHub to the websocket connection.
@@ -100,7 +100,7 @@ func (wsc *SSEClient) Event_Writer() {
 				return
 			}
 
-			_, _err = fmt.Fprintf(*wsc.writer, "id: %s\nevent: %s\ndata: %s %s\n\n", _ev_msg.ID, wsc.envnt_name, time.Now().Format("2006-01-02 15:04:05"), _ev_msg.Message)
+			_, _err = fmt.Fprintf(*wsc.writer, "id: %s\nevent: %s\ndata: %s %s\n\n", _ev_msg.ID, wsc.event_name, time.Now().Format("2006-01-02 15:04:05"), _ev_msg.Message)
 			if _err != nil {
 				return
 			}
@@ -117,8 +117,8 @@ func serve_client(pWSHub *SSEHub, pResWriter http.ResponseWriter, pRequest *http
 
 	defer recover()
 
-	///  creats a client instance
-	_client := &SSEClient{pWSHub: pWSHub, writer: &pResWriter, event_message: make(chan *SSE_Event, 1), envnt_name: pEventName,
+	///  creates a client instance
+	_client := &SSEClient{pWSHub: pWSHub, writer: &pResWriter, event_message: make(chan *SSE_Event, 1), event_name: pEventName,
 		Monitor_Type: pClient_Type, res_controller: http.NewResponseController(pResWriter), context: pRequest.Context()}
 
 	defer func() {
@@ -141,7 +141,7 @@ func Serve_Monitor(pWSHub *SSEHub, pResWriter http.ResponseWriter, pRequest *htt
 
 // serveWs handles websocket requests from the peers.
 func Serve_Status(pWSHub *SSEHub, pResWriter http.ResponseWriter, pRequest *http.Request) {
-	serve_client(pWSHub, pResWriter, pRequest, STAUS_MONITOR, "status")
+	serve_client(pWSHub, pResWriter, pRequest, STATUS_MONITOR, "status")
 }
 
 // serveWs handles websocket requests from the peers.

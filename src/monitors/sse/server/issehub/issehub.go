@@ -21,12 +21,12 @@ type ISSEMonitor interface {
 	// BroadCastLog broadcasts given log entry to connected log reader client
 	Broadcast_Log(message []byte)
 
-	// BroadCastStatus broadcasts given ststus message among the connected status reader clients
+	// BroadCastStatus broadcasts given status message among the connected status reader clients
 	Broadcast_Status(message []byte)
 
 	// BroadCBroadcast_Monitor_Message broadcasts given message to connected monitor reader clients
 	Broadcast_Monitor_Message(message []byte)
-		
+
 	// MonitorsCount returns the number of active monitor message readers count
 	Monitor_Clients_Count() int
 
@@ -35,7 +35,7 @@ type ISSEMonitor interface {
 
 	// LogClientsCount returns the number of active log readers count
 	Log_Clients_Count() int
-	
+
 	// Returns start/stop status of the Web Socket monitoring
 	IsStarted() bool
 }
