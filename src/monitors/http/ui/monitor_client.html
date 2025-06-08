@@ -13,7 +13,6 @@
         headers: {'apikey': '09E64D1428F9854F16DBBEEC1AFA6270'}});    
         const _entrylist = document.getElementById("entrylist");        
         eventSrc.addEventListener("{{.Endpoint}}", function(e) {_entrylist.innerHTML=event.data + "<br>" + _entrylist.innerHTML;})       
-        eventSrc.open = (e) => {e + "<br>" + _entrylist.innerHTML;};        
-        eventSrc.onerror = (err) => {err + "<br>" + _entrylist.innerHTML;};
-    </script>
-</html>
+        eventSrc.open = (err) => {_entrylist.innerHTML; + err + "<br>" + _entrylist.innerHTML;};        
+        eventSrc.onerror = (err) => {_entrylist.innerHTML + err + "<br>" + _entrylist.innerHTML;};
+    </script></html>

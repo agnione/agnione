@@ -8,7 +8,7 @@
 #						You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 #########################################################################################
 
-VESRION=1.0.0
+VESRION=2.0.0
 SOURCE=./app.go
 BINARY=./agnione.app
 

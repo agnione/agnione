@@ -130,31 +130,48 @@ func (h *SSEHub) Run() {
 			h.register_client(_client)
 
 		case _client = <-h.unregister: /// if client disconnects
-
-			/// do the decrement of client count based on the client type
 			h.unregister_client(_client)
 
 		case _message = <-h.broadcast_monitor: /// if broadcast message is requested
-
-			h.mclients.Range(func(key any, value any) bool {
-				key.(*SSEClient).event_message <- _message
-				return true
-			})
+			h._broadcast_events(_message)
 
 		case _message = <-h.broadcast_status: /// if broadcast status is requested
-			h.sclients.Range(func(key any, value any) bool {
-				key.(*SSEClient).event_message <- _message
-				return true
-			})
+			h._broadcast_status(_message)
 
 		case _message = <-h.broadcast_log: /// if broadcast log entries is requested
-
-			h.lclients.Range(func(key any, value any) bool {
-				key.(*SSEClient).event_message <- _message
-				return true
-			})
+			h._broadcast_logs(_message)
 		}
 	}
+}
+
+func (h *SSEHub) _broadcast_events(_message *SSE_Event) {
+
+	defer recover()
+
+	h.mclients.Range(func(key any, value any) bool {
+		key.(*SSEClient).event_message <- _message
+		return true
+	})
+}
+
+func (h *SSEHub) _broadcast_logs(_message *SSE_Event) {
+
+	defer recover()
+
+	h.lclients.Range(func(key any, value any) bool {
+		key.(*SSEClient).event_message <- _message
+		return true
+	})
+}
+
+func (h *SSEHub) _broadcast_status(_message *SSE_Event) {
+
+	defer recover()
+
+	h.sclients.Range(func(key any, value any) bool {
+		key.(*SSEClient).event_message <- _message
+		return true
+	})
 }
 
 func (h *SSEHub) unregister_client(_client *SSEClient) {

@@ -49,11 +49,12 @@ In order to monitor the application real-time activities over Server Sent Events
 ![]()<a href="https://agnione.net/v/agnione_monitoring.webm" target="blank">video</a>
 
 #### Monitoing API end points
-Below API endpoint can be used to build custom monitoring intrafaces or integration to external applcation as feeder and act based on the received information. 
+Below API endpoint can be used to build custom monitoring interfaces or integration to external application as feeder and act based on the received information. 
   
   1. Real-time status monitor -> http://localhost:8080/monitor/status/read
   2. Real-time log monitor -> http://localhost:8080/monitor/logs/read
   3. Real-time monitor event viewer -> http://localhost:8080/monitor/events/read
+  
  
  
 
