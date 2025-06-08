@@ -58,9 +58,8 @@ import (
 
 	build "agnione/v2/src/lib" /// import the AgniOne lib package
 
-	agni "agnione.appfm/src/core" /// import the AgniOne application framework packages
-
 	libbuild "agnione.appfm/src/build"
+	agni "agnione.appfm/src/core" /// import the AgniOne application framework packages
 )
 
 var agniApp *agni.AgniApp /// global Agni application instance
@@ -164,15 +163,12 @@ func main() {
 
 		if _r := recover(); _r != nil {
 			fmt.Printf("Recovered panic %v", _r)
-			_r = nil
 		}
 
 		main_path = nil
 		log_path = nil
 		app_path = nil
-
 		rest_port = nil
-
 		cpu_count = nil
 	}()
 

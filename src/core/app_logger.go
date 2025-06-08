@@ -53,7 +53,6 @@ func (app *AgniApp) Write2Log(pEntry string, pLog_Level aftypes.LogLevel) {
 func (app *AgniApp) Write2LogConsole(pEntry string, pLog_Level aftypes.LogLevel) {
 	fmt.Println(pEntry)
 	app.log_entry <- logger.LogMessage{Msg_Entry: pEntry, Msg_Type: pLog_Level}
-
 }
 
 func (app *AgniApp) log_writer() {
@@ -61,7 +60,6 @@ func (app *AgniApp) log_writer() {
 	defer func() {
 		if _r := recover(); _r != nil {
 			fmt.Println("Recovered panic from log_writer. ", _r)
-			_r = nil
 		}
 
 		app.Remove_Routine()
@@ -96,7 +94,6 @@ func (app *AgniApp) log_writer() {
 							app.log_message <- _logEntry.Msg_Entry /// broadcasts received log message
 						}
 					}
-
 				}
 			}
 		}

@@ -47,11 +47,11 @@ func load_plugin(interface_name string, plugin_name *string) (plugin.Symbol, err
 	/// load module
 	/// 1. open the so file to load the symbols
 	_plugin, _err := plugin.Open(*plugin_name)
-	
-	defer func(){
-		_plugin=nil
+
+	defer func() {
+		_plugin = nil
 	}()
-	
+
 	if _err != nil {
 		return nil, _err
 	}
@@ -65,18 +65,17 @@ func load_plugin(interface_name string, plugin_name *string) (plugin.Symbol, err
 	return _symPlugIn, nil
 }
 
-
 // Get_HTTPPlugIn loads the http client library plugin from given file name and interface name
 // Returns IAHTTPClient and nil if success. Unless nil and error
 func Get_HTTPClientPlugIn(interface_name *string, plugin_filename *string) (ihttp.IAHTTPClient, error) {
 
 	_symClient, _err := load_plugin(*interface_name, plugin_filename)
-	
-	defer func(){
-		_symClient=nil
+
+	defer func() {
+		_symClient = nil
 
 	}()
-	
+
 	if _err != nil {
 		return nil, _err
 	}
@@ -87,10 +86,10 @@ func Get_HTTPClientPlugIn(interface_name *string, plugin_filename *string) (ihtt
 	/// 3. Assert that loaded symbol is of a desired type
 	/// in this case interface type Greeter (defined above)
 	var _iHTTPClientLib ihttp.IAHTTPClient
-	defer func(){
-		_iHTTPClientLib=nil
+	defer func() {
+		_iHTTPClientLib = nil
 	}()
-	
+
 	_iHTTPClientLib, ok := _symClient.(ihttp.IAHTTPClient)
 	if !ok {
 		return nil, fmt.Errorf("unexpected type from module symbols %v", _iHTTPClientLib)
@@ -98,13 +97,13 @@ func Get_HTTPClientPlugIn(interface_name *string, plugin_filename *string) (ihtt
 
 	_ihttpClient := _iHTTPClientLib.New() /// creates the instance
 	if _ihttpClient == nil {
-		return nil, errors.New("failed to creates a instance of " +  *interface_name)
+		return nil, errors.New("failed to creates a instance of " + *interface_name)
 	}
 
 	_httpClient := _ihttpClient.(ihttp.IAHTTPClient)
 
 	if _httpClient == nil {
-		return nil, errors.New("failed to creates a instance from interface of " +  *interface_name)
+		return nil, errors.New("failed to creates a instance from interface of " + *interface_name)
 	}
 
 	return _httpClient, nil
@@ -116,11 +115,11 @@ func Get_HTTPClientPlugIn(interface_name *string, plugin_filename *string) (ihtt
 func Get_WSClientPlugIn(interface_name *string, plugin_filename *string) (iws.IAWSClient, error) {
 
 	_symClient, _err := load_plugin(*interface_name, plugin_filename)
-	
-	defer func(){
-		_symClient=nil
+
+	defer func() {
+		_symClient = nil
 	}()
-	
+
 	if _err != nil {
 		return nil, _err
 	}
@@ -131,10 +130,10 @@ func Get_WSClientPlugIn(interface_name *string, plugin_filename *string) (iws.IA
 	/// 3. Assert that loaded symbol is of a desired type
 	/// in this case interface type Greeter (defined above)
 	var _iWSClient iws.IAWSClient
-	defer func(){
-		_iWSClient=nil
+	defer func() {
+		_iWSClient = nil
 	}()
-	
+
 	_iWSClient, ok := _symClient.(iws.IAWSClient)
 	if !ok {
 		return nil, fmt.Errorf("unexpected type from module symbols %v", _iWSClient)
@@ -142,13 +141,13 @@ func Get_WSClientPlugIn(interface_name *string, plugin_filename *string) (iws.IA
 
 	_iwsc := _iWSClient.New() /// creates the instance
 	if _iwsc == nil {
-		return nil, errors.New("failed to creates a instance of " +  *interface_name)
+		return nil, errors.New("failed to creates a instance of " + *interface_name)
 	}
 
 	_wsClient := _iwsc.(iws.IAWSClient)
 
 	if _wsClient == nil {
-		return nil, errors.New("failed to creates a instance from interface of " +  *interface_name)
+		return nil, errors.New("failed to creates a instance from interface of " + *interface_name)
 	}
 
 	return _wsClient, nil
@@ -159,11 +158,11 @@ func Get_WSClientPlugIn(interface_name *string, plugin_filename *string) (iws.IA
 func Get_AppUnit(plugin_filename *string) (aau.IAppUnit, error) {
 
 	_symClient, _err := load_plugin("IAppUnit", plugin_filename)
-	
-	defer func(){
-		_symClient=nil
+
+	defer func() {
+		_symClient = nil
 	}()
-	
+
 	if _err != nil {
 		return nil, _err
 	}
@@ -174,11 +173,11 @@ func Get_AppUnit(plugin_filename *string) (aau.IAppUnit, error) {
 	/// 3. Assert that loaded symbol is of a desired type
 	/// in this case interface type Greeter (defined above)
 	var _appUnitLib aau.IAppUnit
-	
-	defer func(){
-		_appUnitLib=nil
+
+	defer func() {
+		_appUnitLib = nil
 	}()
-	
+
 	_appUnitLib, ok := _symClient.(aau.IAppUnit)
 	if !ok {
 		return nil, fmt.Errorf("unexpected type from module symbols %v", _appUnitLib)

@@ -37,7 +37,7 @@ import (
 	"runtime"
 	"time"
 
-	kutls "agnione.appfm/src/utils"
+	autls "agnione.appfm/src/utils"
 )
 
 // Name returns the application name
@@ -62,14 +62,14 @@ func (app *AgniApp) Version() string {
 
 // Memory_Usage returns the current application current memory usage
 func (app *AgniApp) Memory_Usage() string {
-	_mem := &runtime.MemStats{}
 
+	_mem := app.memStatus.Get().(*runtime.MemStats)
 	defer func() {
-		_mem = nil
+		app.memStatus.Put(_mem)
 	}()
 
 	runtime.ReadMemStats(_mem)
-	_mem_usage := kutls.FormatByteSize(_mem.Alloc)
+	_mem_usage := autls.FormatByteSize(_mem.Alloc)
 
 	return _mem_usage
 }

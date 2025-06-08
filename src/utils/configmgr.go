@@ -45,15 +45,10 @@ Author        :   D. Ajith Nilantha de Silva  | 02/01/2024
 	Configuration file should be in TOML format
 
 #########################################################################################
-
 	Author                 	Date        	Action      	Description
-
 -----------------------------------------------------------------------------------------------------------------
-
 	Ajith de Silva		02/01/2024	Created 	Created the initial version
-
 	Ajith de Silva		03/01/2024	Updated 	Defined functions with parameters & return values
-
 ########################################################################################
 */
 package utils

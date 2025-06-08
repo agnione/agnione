@@ -58,9 +58,7 @@ import (
 // /admin/config/reload - reloads application configuration
 func (app *AgniApp) StartHttpMonitor() {
 
-	defer func() {
-		recover()
-	}()
+	defer recover()
 
 	app.Write2LogConsole("starting HTTP monitoring ......", apptypes.LOG_INFO)
 

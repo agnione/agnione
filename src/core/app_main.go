@@ -40,8 +40,7 @@
 //	- Write2Log
 //	- WriteFileContent
 /*
-#########################################################################################
-
+#################################################################################################################
 Author        :   D. Ajith Nilantha de Silva contact@agnione.net | 28/10/2024
 
 Copyright     :   © 2024 D. Ajith Nilantha de Silva contact@agnione.net
@@ -62,21 +61,16 @@ Objective     :   Define common package for Application that work as a container
 	This package will to export plugins/libraries to the business units, so that will helps
 	Business units are to implement it's features by using the framework support
 
-#########################################################################################
-
+#################################################################################################################
 	Author                 	Date        	Action      	Description
 -----------------------------------------------------------------------------------------------------------------
-
 	Ajith de Silva		26/01/2024	Created 	Created the initial version
-
 	Ajith de Silva		28/03/2024	Updated 	added the config path and unit path as parameters
-
 	Ajith de Silva		29/03/2024	Updated 	added the log entries broadcast via web socket
-
 	Ajith de Silva		29/03/2024	Updated 	added the logger to application framework
-
-#########################################################################################
+#################################################################################################################
 */
+
 package agni
 
 import (
@@ -101,7 +95,7 @@ import (
 	issem "agnione.appfm/src/monitors/sse/ssehandler"
 )
 
-const MAX_BUFFEREED_CHANS = 16 //// define MAX buffeerred chan count
+const MAX_BUFFEREED_CHANS = 16 //// define MAX buffered chan count
 
 // struct to hold the framework instance data
 type AgniApp struct {
@@ -185,10 +179,10 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 
 	app.stopChan = make(chan bool) /// init the stopper channel
 
-	app.event_message = make(chan string, MAX_BUFFEREED_CHANS)        /// init event message bufferred chan
-	app.log_message = make(chan string, MAX_BUFFEREED_CHANS)          /// init log  message bufferred chan
-	app.log_entry = make(chan logger.LogMessage, MAX_BUFFEREED_CHANS) /// init log event message bufferred chan
-	app.console_entry = make(chan string, MAX_BUFFEREED_CHANS)        /// init console message bufferred chan
+	app.event_message = make(chan string, MAX_BUFFEREED_CHANS)        /// init event message buffered chan
+	app.log_message = make(chan string, MAX_BUFFEREED_CHANS)          /// init log  message buffered chan
+	app.log_entry = make(chan logger.LogMessage, MAX_BUFFEREED_CHANS) /// init log event message buffered chan
+	app.console_entry = make(chan string, MAX_BUFFEREED_CHANS)        /// init console message buffered chan
 
 	/// init the sync locks
 	app.wgEntries = &sync.WaitGroup{}
@@ -202,7 +196,7 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 		},
 	}
 
-	/// set the appication name and version
+	/// set the application name and version
 	app.name = app.appconfig.App.Name
 	app.version = app.appconfig.App.Version
 
@@ -298,31 +292,21 @@ func (app *AgniApp) DeInitialize() {
 	app.memStatus = nil
 	app.appconfig = nil
 	app.coreconfig = nil
-
 	app.HTTPMonitor = nil
 	app.SSEMonitor = nil
-
 	app.wgEntries = nil
 	app.stopChan = nil
 	app.stopStatus = nil
-
 	app.appUnits = nil
-
 	app.appunit_info = nil
-
 	app.console_entry = nil
-
 	app.appinfo = nil
 	app.appstatus = nil
-
 	app.logger = nil
 	app.name = ""
 	app.version = ""
 	app.base_path = nil
 	app.app_config = nil
-	app.logfile_base = ""
-	app.app_log_file = ""
-
 }
 
 func (app *AgniApp) Get_Context() *context.Context {
@@ -446,7 +430,6 @@ func (app *AgniApp) Stop_HTTPMonitor() {
 
 		app.Write2LogConsole("Stopping HTTP monitoring server........ DONE", apptypes.LOG_INFO)
 	}
-
 }
 
 func (app *AgniApp) Stop_Units() {
@@ -493,7 +476,6 @@ func (app *AgniApp) Stop_Logger() {
 			app.no_of_routines.Add(^int32(0))
 		}
 	}
-
 }
 
 // Stop flags the framework to stop by setting the flag to channel
@@ -554,7 +536,6 @@ func (app *AgniApp) Load_AppUnit(_unitIndex *int, appunit *apptypes.Appunit) *in
 	defer func() {
 		if _r := recover(); _r != nil {
 			fmt.Printf("Recovered from Load_Unit panic %v", _r)
-			_r = nil
 		}
 	}()
 
@@ -577,7 +558,6 @@ func (app *AgniApp) Load_AppUnit(_unitIndex *int, appunit *apptypes.Appunit) *in
 		_appUnit, _err := app.Get_AppUnit(_unitIndex) /// Get the AgniOne Unit instance
 
 		if _err != nil {
-
 			app.Write2LogConsole("Failed to load AgniOne "+appunit.Uname+" - "+appunit.Path+". "+_err.Error(), apptypes.LOG_ERROR)
 			return &_loaded_count
 		}
@@ -608,9 +588,7 @@ func (app *AgniApp) Load_AppUnit(_unitIndex *int, appunit *apptypes.Appunit) *in
 			/// All good. store the started AppUnit in the pool
 			_loaded_count++
 			app.appUnits = append(app.appUnits, _appUnit)
-
 			app.Write2LogConsole("Started ------ ("+strconv.Itoa(int(_pool_index))+") of ["+strconv.Itoa(int(appunit.PoolSize))+"] - "+appunit.Uname+" successfully", apptypes.LOG_INFO)
-
 		}
 	}
 

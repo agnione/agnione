@@ -77,5 +77,4 @@ func Execute_Command(command string) (string, error) {
 
 	_params := strings.Split(command, " ")
 	return run_cmd(_params[0], _params[1:])
-
 }

@@ -1,6 +1,6 @@
 // build package provides Interface to implement the Logger plugin for AgniOne Application Framework
 //
-// This interfce defines functions that needs to implement when building ZFP Logger plugin
+// This interface defines functions that needs to implement when building ZFP Logger plugin
 //
 // - Initialize
 // - GetID
@@ -22,7 +22,6 @@ Class/module  :   alogger.go
 Objective     :   Define the logger client interface plugin
 
 	This package has ability to handle all the logging levels.
-	It is required to provide ialogger/ialogger.go and klogger/klogger.go
 	files to build the client plug-in.
 
 #########################################################################################

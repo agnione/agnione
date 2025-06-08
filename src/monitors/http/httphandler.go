@@ -181,7 +181,7 @@ func (hm *HttpMonitor) is_authorized(pRequest *http.Request) bool {
 func (hm *HttpMonitor) Render_View_Handler(w http.ResponseWriter, pViewTemplate string, params any) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if _tmpl, _err := template.ParseFS(embededUIs, pViewTemplate); _err != nil {
-		hm.appInstance.Write2Log("Failed to parse embeded "+pViewTemplate+". "+_err.Error(), apptypes.LOG_ERROR)
+		hm.appInstance.Write2Log("Failed to parse embedded "+pViewTemplate+". "+_err.Error(), apptypes.LOG_ERROR)
 	} else {
 		_tmpl.Execute(w, params)
 	}
@@ -347,7 +347,7 @@ func (hm *HttpMonitor) status(pResWriter http.ResponseWriter, pRequest *http.Req
 		hm.setJsonResp(_message, http.StatusOK, pResWriter)
 		_message = nil
 	} else {
-		hm.appInstance.Write2Log("API Error occured while reading Status. "+_err.Error(), apptypes.LOG_ERROR)
+		hm.appInstance.Write2Log("API Error occurred while reading Status. "+_err.Error(), apptypes.LOG_ERROR)
 	}
 }
 
@@ -358,7 +358,7 @@ func (hm *HttpMonitor) info(pResWriter http.ResponseWriter, pRequest *http.Reque
 		hm.setJsonResp(_message, http.StatusOK, pResWriter)
 		_message = nil
 	} else {
-		hm.appInstance.Write2Log("API Error occured while reading info. "+_err.Error(), apptypes.LOG_ERROR)
+		hm.appInstance.Write2Log("API Error occurred while reading info. "+_err.Error(), apptypes.LOG_ERROR)
 	}
 }
 
@@ -372,7 +372,7 @@ func (hm *HttpMonitor) ready(pResWriter http.ResponseWriter, pRequest *http.Requ
 		hm.setJsonResp(_message, http.StatusOK, pResWriter)
 		_message = nil
 	} else {
-		hm.appInstance.Write2Log("API Error occured while reading Ready Status. "+_err.Error(), apptypes.LOG_ERROR)
+		hm.appInstance.Write2Log("API Error occurred while reading Ready Status. "+_err.Error(), apptypes.LOG_ERROR)
 	}
 }
 
