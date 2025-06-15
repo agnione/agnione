@@ -34,6 +34,8 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
+	"sync"
 	"time"
 )
 
@@ -49,6 +51,13 @@ type SSE_Event struct {
 	ID      string
 	Message string
 }
+
+func (sseevt *SSE_Event) Reset() {
+	sseevt.ID = ""
+	sseevt.Message = ""
+}
+
+var SSEEventsPool *sync.Pool
 
 // Client is a middleman between the websocket connection and the pWSHub.
 type SSEClient struct {
@@ -73,6 +82,7 @@ func (wsc *SSEClient) Event_Writer() {
 	var _err error
 	var _ev_msg *SSE_Event
 	var _isOK bool
+	var _strBuilder strings.Builder
 
 	defer func() {
 		if _r := recover(); _r != nil {
@@ -100,12 +110,28 @@ func (wsc *SSEClient) Event_Writer() {
 				return
 			}
 
-			_, _err = fmt.Fprintf(*wsc.writer, "id: %s\nevent: %s\ndata: %s %s\n\n", _ev_msg.ID, wsc.event_name, time.Now().Format("2006-01-02 15:04:05"), _ev_msg.Message)
+			_strBuilder.WriteString("id: ")
+			_strBuilder.WriteString(_ev_msg.ID)
+			_strBuilder.WriteString("\nevent: ")
+			_strBuilder.WriteString(wsc.event_name)
+			_strBuilder.WriteString("\ndata: ")
+			_strBuilder.WriteString(time.Now().Format("2006-01-02 15:04:05 "))
+			_strBuilder.WriteString(_ev_msg.Message)
+			_strBuilder.WriteString("\n\n")
+
+			_, _err = fmt.Fprint(*wsc.writer, _strBuilder.String())
+			_strBuilder.Reset()
+
+			if SSEEventsPool != nil {
+				_ev_msg.Reset()
+				SSEEventsPool.Put(_ev_msg)
+			}
+
 			if _err != nil {
 				return
 			}
-			_err = wsc.res_controller.Flush()
-			if _err != nil {
+
+			if _err = wsc.res_controller.Flush(); _err != nil {
 				return
 			}
 		}

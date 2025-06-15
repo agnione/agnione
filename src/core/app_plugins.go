@@ -64,7 +64,7 @@ func (app *AgniApp) Get_WSClient(pType *string) (iws.IAWSClient, error) {
 		*pType = "default"
 	}
 
-	_plugin_config, _err := app.Get_Plugin_Config("websocket", &app.coreconfig.Plugins.Websocket, pType)
+	_plugin_config, _err := app.Get_Plugin_Config("websocket", &app.coreConfigPtr.Load().Plugins.Websocket, pType)
 
 	defer func() {
 		_plugin_config = nil
@@ -93,7 +93,7 @@ func (app *AgniApp) Get_RESTClient(pType *string) (ihttp.IAHTTPClient, error) {
 		*pType = "default"
 	}
 
-	_plugin_config, _err := app.Get_Plugin_Config("http", &app.coreconfig.Plugins.HTTP, pType)
+	_plugin_config, _err := app.Get_Plugin_Config("http", &app.coreConfigPtr.Load().Plugins.HTTP, pType)
 
 	defer func() {
 		_plugin_config = nil
@@ -117,11 +117,11 @@ func (app *AgniApp) Get_RESTClient(pType *string) (ihttp.IAHTTPClient, error) {
 
 func (app *AgniApp) Get_AppUnit(pAppUnit *int) (aap.IAppUnit, error) {
 
-	if app.appconfig.Appunits[*pAppUnit].Enable != 1 {
+	if app.appConfigPtr.Load().Appunits[*pAppUnit].Enable != 1 {
 		return nil, fmt.Errorf("http plug-in is disabled")
 	}
 
-	_iPlugIn, _err := zutls.Get_AppUnit(&app.appconfig.Appunits[*pAppUnit].Path)
+	_iPlugIn, _err := zutls.Get_AppUnit(&app.appConfigPtr.Load().Appunits[*pAppUnit].Path)
 	if _err != nil {
 		return nil, _err
 	}
@@ -131,13 +131,15 @@ func (app *AgniApp) Get_AppUnit(pAppUnit *int) (aap.IAppUnit, error) {
 
 func (app *AgniApp) Units_List() ([]atypes.Appunit, error) {
 
-	if app.appconfig == nil {
+	if app.appConfigPtr.Load().Appunits == nil {
 		return nil, errors.New("application configuration is not initialized")
 	}
 
-	return app.appconfig.Appunits, nil
+	return app.appConfigPtr.Load().Appunits, nil
 }
 
+/* BEGIN UNIT Control */
+/// Need to implement unit control
 func (app *AgniApp) Unit_Stop(pUnitName *string, pForce bool) (bool, error) {
 
 	return true, nil
@@ -153,6 +155,7 @@ func (app *AgniApp) Unit_Restart(pUnitName *string, pForce bool) (bool, error) {
 	return true, nil
 }
 
+/* END UNIT Control */
 func (app *AgniApp) Unit_Status(pUnitName *string) (*atypes.AppUnitInfo, error) {
 
 	if len(app.appUnits) == 0 {
@@ -175,7 +178,7 @@ func (app *AgniApp) Unit_Status(pUnitName *string) (*atypes.AppUnitInfo, error) 
 		}
 	}
 	if !_bfound {
-		return nil, errors.New("no matching application unit loaded. (" + *pUnitName + ")")
+		return nil, errors.New("no matching application unit found. (" + *pUnitName + ")")
 	} else {
 		return _uinfo, nil
 	}

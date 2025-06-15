@@ -201,8 +201,9 @@ func (app *AgniApp) update_app_status() {
 	app.appstatus.Mem_Usage = app.last_mem_usage
 
 	if app.SSEMonitor != nil {
-		app.appstatus.MonitorClients = app.SSEMonitor.MonitorClientsCount()
+		app.appstatus.EventsClients = app.SSEMonitor.EventClientsCount()
 		app.appstatus.StatusClients = app.SSEMonitor.StatusClientsCount()
+		app.appstatus.LogClients = app.SSEMonitor.LogClientsCount()
 	}
 
 	app.appstatusPtr.Store(app.appstatus)
@@ -247,7 +248,7 @@ func (app *AgniApp) Update_Status_Process() {
 		app.Remove_Routine()
 	}()
 
-	_ticker := time.NewTicker(time.Minute * 5)
+	_ticker := time.NewTicker(time.Minute * 1)
 
 	defer func() {
 		_ticker.Stop()
@@ -272,7 +273,7 @@ func (app *AgniApp) Update_Info_Process() {
 		app.Remove_Routine()
 	}()
 
-	_ticker := time.NewTicker(time.Second * 5)
+	_ticker := time.NewTicker(time.Minute * 1)
 
 	defer func() {
 		_ticker.Stop()

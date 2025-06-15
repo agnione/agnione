@@ -120,6 +120,9 @@ type AgniApp struct {
 	appstatusPtr atomic.Pointer[apptypes.AppStatus]
 	appInfoPtr   atomic.Pointer[apptypes.AppInfo]
 
+	appConfigPtr  atomic.Pointer[apptypes.AppConfig]
+	coreConfigPtr atomic.Pointer[apptypes.FMConfig]
+
 	last_mem_usage apptypes.MemUsage
 	event_message  chan string
 	log_message    chan string
@@ -172,7 +175,7 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 	app.appconfig, _err = app.LoadAppConfiguration(pApp_Config) /// try to load the application configuration
 	if _err != nil {
 		fmt.Printf("application configuration file failed to load\n%v\n", _err)
-		return false, fmt.Errorf("main configuration file failed to load - %v", _err)
+		return false, fmt.Errorf("application configuration file failed to load - %v", _err)
 	}
 
 	app.started = time.Now() /// set the started time to current date-time
@@ -221,6 +224,10 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 	if *pREST_Port != 0 {
 		app.coreconfig.Core.Monitor.Port = pREST_Port
 	}
+
+	/// store the app configs into atomic pointers
+	app.appConfigPtr.Store(app.appconfig)
+	app.coreConfigPtr.Store(app.coreconfig)
 
 	app.appready_status = new(apptypes.AppReady_Status)
 
@@ -324,6 +331,7 @@ func (app *AgniApp) Reload_Config() (bool, error) {
 		return false, _err
 	} else {
 		app.appconfig = _newConfig
+		app.appConfigPtr.Store(app.appconfig)
 		app.reload_requested = true /// set reload is requested. will be used in routine to reload the app
 		return true, nil
 	}
@@ -400,13 +408,16 @@ func (app *AgniApp) Start() {
 	app.stopStatus = make(chan bool) /// init the stopper channel for status reads
 
 	app.Add_Routine()
-	go app.StartHttpMonitor() /// start HTTP monitoring
-
-	app.Add_Routine()
 	go app.Update_Status_Process()
 
 	app.Add_Routine()
 	go app.Update_Info_Process()
+
+	app.update_app_status() //// performs the initial status update
+	app.update_app_info()   //// performs the initial unitinfo update
+
+	app.Add_Routine()
+	go app.StartHttpMonitor() /// start HTTP monitoring
 
 }
 
@@ -507,7 +518,7 @@ func (app *AgniApp) Load_Units() {
 	var _unitIndex int = 0
 	var _appUnit apptypes.Appunit
 
-	for _unitIndex, _appUnit = range app.appconfig.Appunits {
+	for _unitIndex, _appUnit = range app.appConfigPtr.Load().Appunits {
 
 		///if the app unit is disabled, log it and continue the the next
 		if _appUnit.Enable == 0 {

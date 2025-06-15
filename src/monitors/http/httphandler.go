@@ -33,6 +33,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -51,7 +52,9 @@ type HttpMonitor struct {
 	apikeys            map[string]bool
 	cors               *[]string
 	httpServer         *http.Server
+	httpProfiler       *http.Server
 	httpAddr           string
+	observe_port       *int
 	isstarted          bool
 }
 
@@ -60,9 +63,10 @@ var embededUIs embed.FS
 
 // Initialize initializes the HttpMonitor instance
 // Requires the IZApp interface as parameter
-func (hm *HttpMonitor) Initialize(pApp_Instance iappfw.IAgniApp) {
+func (hm *HttpMonitor) Initialize(pApp_Instance iappfw.IAgniApp, pProfilerPort *int) {
 	hm.appInstance = pApp_Instance
 	hm.httpServerExitDone = &sync.WaitGroup{}
+	hm.observe_port = pProfilerPort
 
 	var _temp_path = *hm.appInstance.App_Path() + "config/apikeys.config"
 	/// load the api keys to REST authentication
@@ -243,38 +247,41 @@ func (hm *HttpMonitor) Start(pAddress *string, pHttp_Port *int) {
 
 		_mux := http.NewServeMux()
 
-		_mux.HandleFunc("/live", hm.live)
+		_mux.HandleFunc("GET /live", hm.live)
 
-		_mux.Handle("/ready", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.ready))))
+		_mux.Handle("GET /ready", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.ready))))
 
 		///apikey authentication have been set to below routes
-		_mux.Handle("/info", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.info))))
-		_mux.Handle("/status", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.status))))
+		_mux.Handle("GET /info", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.info))))
+		_mux.Handle("GET /status", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.status))))
 
 		/// configuration management
 
-		_mux.Handle("/admin/config/reload", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.config_reload))))
-		_mux.Handle("/admin/config/save", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.config_save))))
-		_mux.Handle("/admin/log/setlevel", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.set_log_level))))
+		_mux.Handle("GET /admin/config/reload", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.config_reload))))
+		_mux.Handle("POST /admin/config/save", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.config_save))))
+		_mux.Handle("GET /admin/log/setlevel", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.set_log_level))))
 
 		/// application units management
+		_mux.Handle("GET /admin/units", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.list_units))))
+		_mux.Handle("GET /admin/unit/stop", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.stop_unit))))
+		_mux.Handle("GET /admin/unit/{name}/start", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.start_unit))))
+		_mux.Handle("GET /admin/unit/{name}/restart?force=", hm.authMiddleware(http.HandlerFunc(hm.restart_unit)))
+		_mux.Handle("GET /admin/unit/{name}/status", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.status_unit))))
 
-		_mux.Handle("/admin/units", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.list_units))))
-		_mux.Handle("/admin/unit/stop", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.stop_unit))))
-		_mux.Handle("/admin/unit/{name}/start", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.start_unit))))
-		_mux.Handle("/admin/unit/{name}/restart?force=", hm.authMiddleware(http.HandlerFunc(hm.restart_unit)))
-		_mux.Handle("/admin/unit/{name}/status", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.status_unit))))
+		// profiler API endpoints
+		_mux.Handle("GET /admin/profiler/start", hm.authMiddleware(http.HandlerFunc(hm.start_profiler)))
+		_mux.Handle("GET /admin/profiler/stop", hm.authMiddleware(http.HandlerFunc(hm.stop_profiler)))
 
 		//// set teh SSE monitoring
 		if hm.sseMonitor != nil {
 
-			_mux.Handle("/monitor/view/logs", http.HandlerFunc(hm.Log_View_Handler))
-			_mux.Handle("/monitor/view/status", http.HandlerFunc(hm.Status_View_Handler))
-			_mux.Handle("/monitor/view/events", http.HandlerFunc(hm.Event_View_Handler))
+			_mux.Handle("GET /monitor/view/logs", http.HandlerFunc(hm.Log_View_Handler))
+			_mux.Handle("GET /monitor/view/status", http.HandlerFunc(hm.Status_View_Handler))
+			_mux.Handle("GET /monitor/view/events", http.HandlerFunc(hm.Event_View_Handler))
 
-			_mux.Handle("/monitor/logs/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Logger))))
-			_mux.Handle("/monitor/status/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Status))))
-			_mux.Handle("/monitor/events/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Monitor))))
+			_mux.Handle("GET /monitor/logs/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Logger))))
+			_mux.Handle("GET /monitor/status/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Status))))
+			_mux.Handle("GET /monitor/events/read", hm.corsMiddleware(hm.authMiddleware(http.HandlerFunc(hm.sseMonitor.Monitor))))
 
 			hm.sseMonitor.Start()
 		}
@@ -589,6 +596,66 @@ func (hm *HttpMonitor) status_unit(pResWriter http.ResponseWriter, pRequest *htt
 	//for  _unit:=range hm.appInstance.Ap
 	hm.setJsonResp([]byte("TO DD : send status of uint "+_unit_name), http.StatusOK, pResWriter)
 
+}
+
+// Start starts the HttpMonitor on given address and port
+//
+// Parameter address is the host address
+// Parameter http_port is the port to bind on given address
+func (hm *HttpMonitor) start_profiler(res http.ResponseWriter, req *http.Request) {
+
+	if hm.httpProfiler != nil {
+		hm.setJsonResp([]byte(`{"Start":"profiler already started"}`), http.StatusOK, res)
+		return
+	}
+
+	go func() {
+
+		defer func() {
+			recover()
+			hm.httpProfiler = nil
+			hm.appInstance.Write2Log("Profiler API stopped on port "+strconv.Itoa(int(*hm.observe_port)), apptypes.LOG_INFO)
+		}()
+
+		hm.appInstance.Write2Log("Profiler API started on port "+strconv.Itoa(int(*hm.observe_port)), apptypes.LOG_INFO)
+		hm.httpProfiler = &http.Server{Addr: "0.0.0.0:" + strconv.Itoa(int(*hm.observe_port)), Handler: nil,
+			ReadTimeout:       10 * time.Second,
+			WriteTimeout:      10 * time.Second,
+			IdleTimeout:       120 * time.Second,
+			ReadHeaderTimeout: 5 * time.Second,
+		}
+		_err := hm.httpProfiler.ListenAndServe()
+		if _err != http.ErrServerClosed {
+			hm.appInstance.Write2Log("Profiler API failed to start on port "+strconv.Itoa(int(*hm.observe_port))+"."+_err.Error(), apptypes.LOG_ERROR)
+			hm.httpProfiler = nil
+			return
+		}
+	}()
+
+	hm.setJsonResp([]byte(`{"Profiler Start":"Queued"}`), http.StatusOK, res)
+}
+
+// Stop stops the running HttpMonitor
+//
+// Requires the res http.ResponseWriter as parameter
+// Requires the req *http.Request as parameter
+func (hm *HttpMonitor) stop_profiler(res http.ResponseWriter, req *http.Request) {
+
+	go func() {
+		defer recover()
+
+		if hm.httpProfiler != nil {
+			hm.appInstance.Write2Log("Shutting down profiler on port  "+strconv.Itoa(int(*hm.observe_port)), apptypes.LOG_INFO)
+			_err := hm.httpProfiler.Shutdown(context.TODO())
+			if _err != nil {
+				hm.appInstance.Write2Log("Profiler API failed to stop. "+_err.Error(), apptypes.LOG_ERROR)
+			}
+			hm.appInstance.Write2Log("Profiler API shutdown.... DONE", apptypes.LOG_INFO)
+			hm.httpProfiler = nil
+		}
+	}()
+
+	hm.setJsonResp([]byte(`{"Profiler Stop":"Queued"}`), http.StatusOK, res)
 }
 
 var IHTTPMonitor HttpMonitor

@@ -34,7 +34,6 @@ import (
 	"time"
 
 	ihttpm "agnione.appfm/src/monitors/http"
-	issem "agnione.appfm/src/monitors/sse/ssehandler"
 )
 
 /* ###################### START ###### 		Monitor related functions ###################### */
@@ -63,11 +62,11 @@ func (app *AgniApp) StartHttpMonitor() {
 	app.Write2LogConsole("starting HTTP monitoring ......", apptypes.LOG_INFO)
 
 	app.HTTPMonitor = &ihttpm.HttpMonitor{}
-	app.HTTPMonitor.Initialize(app)
-	app.HTTPMonitor.Start(&app.coreconfig.Core.Monitor.Host, app.coreconfig.Core.Monitor.Port)
+	app.HTTPMonitor.Initialize(app, app.coreConfigPtr.Load().Core.Monitor.Port)
+	app.HTTPMonitor.Start(&app.coreConfigPtr.Load().Core.Monitor.Host, app.coreConfigPtr.Load().Core.Monitor.Port)
 
-	app.Write2LogConsole("HTTP monitoring started on "+app.coreconfig.Core.Monitor.Host+":"+
-		strconv.Itoa(*app.coreconfig.Core.Monitor.Port), apptypes.LOG_INFO)
+	app.Write2LogConsole("HTTP monitoring started on "+app.coreConfigPtr.Load().Core.Monitor.Host+":"+
+		strconv.Itoa(*app.coreConfigPtr.Load().Core.Monitor.Port), apptypes.LOG_INFO)
 
 	app.SSEMonitor = app.HTTPMonitor.Get_SSEMonitorPtr()
 
@@ -75,11 +74,10 @@ func (app *AgniApp) StartHttpMonitor() {
 	go app.broadcast_log_messages()
 
 	app.Add_Routine()
-	go app.broadcast_status_messages()
-
-	app.Add_Routine()
 	go app.broadcast_event_messages()
 
+	app.Add_Routine()
+	go app.broadcast_status_messages()
 }
 
 // Send_Event_Message broadcasts given message via SSE monitoring.
@@ -89,8 +87,6 @@ func (app *AgniApp) Send_Event(pMessage string) {
 
 // broadcast_status broadcast the application status via sse monitoring
 func (app *AgniApp) broadcast_status_messages() {
-
-	time.Sleep(1500 * time.Millisecond) /// set delay to init
 
 	defer func() {
 		if _r := recover(); _r != nil {
@@ -106,34 +102,31 @@ func (app *AgniApp) broadcast_status_messages() {
 		return
 	}
 
-	var _statusmsg []byte
 	_ticker := time.NewTicker(1 * time.Minute)
 
 	defer func() {
 		_ticker.Stop()
 		_ticker = nil
-		_statusmsg = nil
 		app.Write2Log("stopping the status broadcasting SSE", apptypes.LOG_INFO)
 	}()
 
 	app.Write2Log("broadcasting status via SSE started", apptypes.LOG_INFO)
-	_sseEvent := issem.SSE_Event{}
+	var _statusmsg []byte
+
 	for {
 		select {
 		case <-app.stopChan:
 			return
 		case <-_ticker.C:
 			{
-
-				if app.SSEMonitor == nil {
-					return
-				}
-
-				if app.SSEMonitor.StatusClientsCount() > 0 {
-					if _statusmsg, _ = json.Marshal(app.Get_App_Status()); _statusmsg != nil {
-						_sseEvent.ID = time.Microsecond.String()
-						_sseEvent.Message = string(_statusmsg)
-						app.SSEMonitor.Broadcast_Status(_sseEvent) /// broadcast the received status
+				if app.SSEMonitor != nil {
+					if app.SSEMonitor.StatusClientsCount() > 0 {
+						if _statusmsg, _ = json.Marshal(app.Get_App_Status()); _statusmsg != nil {
+							_sseEvent := app.SSEMonitor.Fetch_SSEEvent()
+							_sseEvent.ID = time.Microsecond.String()
+							_sseEvent.Message = string(_statusmsg)
+							app.SSEMonitor.Broadcast_Status(_sseEvent) /// broadcast the received status
+						}
 					}
 				}
 			}
@@ -142,8 +135,6 @@ func (app *AgniApp) broadcast_status_messages() {
 }
 
 func (app *AgniApp) broadcast_event_messages() {
-
-	time.Sleep(2 * time.Second) /// set delay to init
 
 	defer func() {
 		if _r := recover(); _r != nil {
@@ -160,18 +151,20 @@ func (app *AgniApp) broadcast_event_messages() {
 	}
 
 	app.Write2Log("broadcasting event messages via SSE started", apptypes.LOG_INFO)
-	_sseEvent := issem.SSE_Event{}
+	_sseMsg := ""
 	for {
 		select {
 		case <-app.stopChan:
 			return
-		case _sseEvent.Message = <-app.event_message:
+		case _sseMsg = <-app.event_message:
 			{
 				if app.SSEMonitor == nil {
 					return
 				}
-				if app.SSEMonitor.MonitorClientsCount() > 0 && len(_sseEvent.Message) > 0 {
+				if app.SSEMonitor.EventClientsCount() > 0 && len(_sseMsg) > 0 {
+					_sseEvent := app.SSEMonitor.Fetch_SSEEvent()
 					_sseEvent.ID = time.Microsecond.String()
+					_sseEvent.Message = _sseMsg
 					app.SSEMonitor.Broadcast_Event(_sseEvent) /// broadcast the received status
 				}
 			}
@@ -180,8 +173,6 @@ func (app *AgniApp) broadcast_event_messages() {
 }
 
 func (app *AgniApp) broadcast_log_messages() {
-
-	time.Sleep(2 * time.Second) /// set delay to init
 
 	defer func() {
 		if _r := recover(); _r != nil {
@@ -198,19 +189,21 @@ func (app *AgniApp) broadcast_log_messages() {
 	}
 
 	app.Write2Log("broadcasting log messages via SSE started", apptypes.LOG_INFO)
-	_sseEvent := issem.SSE_Event{}
+	_sseMsg := ""
 	for {
 		select {
 		case <-app.stopChan:
 			return
-		case _sseEvent.Message = <-app.log_message:
+		case _sseMsg = <-app.log_message:
 			{
 				if app.SSEMonitor == nil {
 					return
 				}
 
-				if app.SSEMonitor.LogClientsCount() > 0 && len(_sseEvent.Message) > 0 {
+				if app.SSEMonitor.LogClientsCount() > 0 && len(_sseMsg) > 0 {
+					_sseEvent := app.SSEMonitor.Fetch_SSEEvent()
 					_sseEvent.ID = time.Microsecond.String()
+					_sseEvent.Message = _sseMsg
 					app.SSEMonitor.Broadcast_Log(_sseEvent) /// broadcasts received log message
 				}
 			}

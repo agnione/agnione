@@ -8,7 +8,7 @@
 //			- IsFileExist
 //			- Get_FileInfo
 //			- Get_File_Content
-//			- GetFileContrntLines
+//			- GetFileContentLines
 //			- WriteFileContent
 //			- GetFilePtr
 // Common functions:

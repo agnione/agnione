@@ -35,7 +35,8 @@ import (
 	"sync/atomic"
 )
 
-const MAX_CLIENTS = 50 //// define MAX clients to 20 per topic
+const MAX_CLIENTS = 50     //// define MAX clients to 20 per topic
+const MAX_CHAN_BUFFER = 10 //// define MAX clients to 20 per topic
 
 // Hub maintains the set of active clients and broadcasts messages to the clients.
 type SSEHub struct {
@@ -59,9 +60,9 @@ type SSEHub struct {
 func NewHub(pLogger *log.Logger) *SSEHub {
 	/// create a new instance of the WSHub
 	return &SSEHub{
-		broadcast_monitor: make(chan *SSE_Event),
-		broadcast_status:  make(chan *SSE_Event),
-		broadcast_log:     make(chan *SSE_Event),
+		broadcast_monitor: make(chan *SSE_Event, MAX_CHAN_BUFFER),
+		broadcast_status:  make(chan *SSE_Event, MAX_CHAN_BUFFER),
+		broadcast_log:     make(chan *SSE_Event, MAX_CHAN_BUFFER),
 
 		register:   make(chan *SSEClient),
 		unregister: make(chan *SSEClient),
@@ -172,6 +173,7 @@ func (h *SSEHub) _broadcast_status(_message *SSE_Event) {
 		key.(*SSEClient).event_message <- _message
 		return true
 	})
+
 }
 
 func (h *SSEHub) unregister_client(_client *SSEClient) {
@@ -227,18 +229,18 @@ func (h *SSEHub) register_client(_client *SSEClient) {
 }
 
 // BroadCast broadcasts message among connected websocket clients
-func (h *SSEHub) Broadcast_Event(pMessage SSE_Event) {
-	h.broadcast_monitor <- &pMessage
+func (h *SSEHub) Broadcast_Event(pMessage *SSE_Event) {
+	h.broadcast_monitor <- pMessage
 }
 
 // BroadCast broadcasts status message among connected websocket clients
-func (h *SSEHub) Broadcast_Status(pMessage SSE_Event) {
-	h.broadcast_status <- &pMessage
+func (h *SSEHub) Broadcast_Status(pMessage *SSE_Event) {
+	h.broadcast_status <- pMessage
 }
 
 // BroadCast broadcasts log entries among connected websocket clients
-func (h *SSEHub) Broadcast_Log(pMessage SSE_Event) {
-	h.broadcast_log <- &pMessage
+func (h *SSEHub) Broadcast_Log(pMessage *SSE_Event) {
+	h.broadcast_log <- pMessage
 }
 
 // ClientsCount returns the connected web socket client count for monitor end point

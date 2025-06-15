@@ -90,7 +90,7 @@ func (app *AgniApp) log_writer() {
 					}
 
 					if app.SSEMonitor != nil {
-						if app.SSEMonitor.MonitorClientsCount() > 0 {
+						if app.SSEMonitor.LogClientsCount() > 0 {
 							app.log_message <- _logEntry.Msg_Entry /// broadcasts received log message
 						}
 					}
