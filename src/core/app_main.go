@@ -95,7 +95,7 @@ import (
 	issem "agnione.appfm/src/monitors/sse/ssehandler"
 )
 
-const MAX_BUFFEREED_CHANS = 16 //// define MAX buffered chan count
+const MAX_BUFFERED_CHANS = 8 //// define MAX buffered chan count
 
 // struct to hold the framework instance data
 type AgniApp struct {
@@ -182,10 +182,10 @@ func (app *AgniApp) Initialize(pCTX_Current *context.Context, pOS_PID *int, pBas
 
 	app.stopChan = make(chan bool) /// init the stopper channel
 
-	app.event_message = make(chan string, MAX_BUFFEREED_CHANS)        /// init event message buffered chan
-	app.log_message = make(chan string, MAX_BUFFEREED_CHANS)          /// init log  message buffered chan
-	app.log_entry = make(chan logger.LogMessage, MAX_BUFFEREED_CHANS) /// init log event message buffered chan
-	app.console_entry = make(chan string, MAX_BUFFEREED_CHANS)        /// init console message buffered chan
+	app.event_message = make(chan string, MAX_BUFFERED_CHANS)        /// init event message buffered chan
+	app.log_message = make(chan string, MAX_BUFFERED_CHANS)          /// init log  message buffered chan
+	app.log_entry = make(chan logger.LogMessage, MAX_BUFFERED_CHANS) /// init log event message buffered chan
+	app.console_entry = make(chan string, MAX_BUFFERED_CHANS)        /// init console message buffered chan
 
 	/// init the sync locks
 	app.wgEntries = &sync.WaitGroup{}
