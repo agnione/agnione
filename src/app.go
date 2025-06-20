@@ -128,11 +128,8 @@ func main() {
 		runtime.GC()
 	}()
 
-	println("")
-	println(banner)
+	println("\n", banner, "\r\n", "\r\n")
 	banner = ""
-	println("")
-	println("")
 
 	_buildinfo := BuildInfo() /// get the application build information
 	println("\tVersion : " + _buildinfo.Version + "\n\tBuilt time : " + _buildinfo.Time + "\n\tBuilt user : " + _buildinfo.User + "\n\tBuilt Go version : " + _buildinfo.BuildGoVersion + "\n\n")
@@ -187,9 +184,7 @@ func main() {
 	}
 
 	runtime.GOMAXPROCS(*cpu_count) /// set max CPU for go runtime
-
-	println("CPU cores     : " + strconv.Itoa(*cpu_count) + "/" + strconv.Itoa(runtime.NumCPU()))
-	println("OS Process ID : " + strconv.Itoa(_os_pid))
+	println("CPU cores     : "+strconv.Itoa(*cpu_count)+"/"+strconv.Itoa(runtime.NumCPU()), "\nOS Process ID : "+strconv.Itoa(_os_pid))
 
 	var _err error
 
@@ -197,11 +192,8 @@ func main() {
 start:
 
 	/// create AgniOne App instance and initialize it
-	println("using app root path\t: " + *main_path)
-	println("using app log path\t: " + *log_path)
-	println("using app unit path\t: " + *app_path + "\n")
+	println("using app root path\t: "+*main_path, "\nusing app log path\t: "+*log_path, "\nusing app unit path\t: "+*app_path+"\n\nInitialing AgniOne ......")
 
-	println("\nInitialing AgniOne ......")
 	agniApp = new(agni.AgniApp)
 
 	/// create the cancellation application context
@@ -255,8 +247,8 @@ start:
 	reload := agniApp.Reload_Requested() /// read if reload requested flag set
 
 	/// clear the variables
-	println("Stopped :: " + agniApp.Name() + " (" + agniApp.ID() + ") - " + agniApp.Version() + "\n")
-	println("Cleaning the AgniOne environment")
+	println("Stopped :: "+agniApp.Name()+" ("+agniApp.ID()+") - "+agniApp.Version()+"\n", "Cleaning the AgniOne environment")
+
 	agniApp.DeInitialize() ///
 	agniApp = nil
 
