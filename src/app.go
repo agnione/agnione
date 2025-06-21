@@ -92,7 +92,7 @@ func GetBasePath() *string {
 // SignalHandler wait for the interrupt signal to support graceful shutdown.
 func SignalHandler() {
 	<-ctx.Done()
-	println("*********************************\nShutdown Signal Received\n*********************************")
+	println("***************************************\nShutdown Signal Received\n***************************************")
 }
 
 // / define the command line arguments
@@ -129,13 +129,13 @@ func main() {
 		runtime.GC()
 	}()
 
-	println("\n", banner, "\r\n", "\r\n")
+	println("\n", banner, "\n")
 	banner = ""
 
 	_buildinfo := BuildInfo() /// get the application build information
-	println("\tVersion : " + _buildinfo.Version + "\n\tBuilt time : " + _buildinfo.Time + "\n\tBuilt user : " + _buildinfo.User + "\n\tBuilt Go version : " + _buildinfo.BuildGoVersion + "\n\n")
+	println("\tVersion : " + _buildinfo.Version + "\n\tBuilt time : " + _buildinfo.Time + "\n\tBuilt user : " + _buildinfo.User + "\n\tBuilt Go version : " + _buildinfo.BuildGoVersion + "\n")
 	_buildinfo = nil
-	println("############################################################\n")
+	println("##########################################################################################################")
 
 	flag.Usage = usage
 
@@ -186,7 +186,7 @@ func main() {
 
 	runtime.GOMAXPROCS(*cpu_count) /// set max CPU for go runtime
 	println("CPU cores     : "+strconv.Itoa(*cpu_count)+"/"+strconv.Itoa(runtime.NumCPU()), "\nOS Process ID : "+strconv.Itoa(_os_pid))
-
+	println("----------------------------------------------------------------------------------------------------------")
 	var _err error
 
 	/// read config from config server and save it to the /config folder
