@@ -14,7 +14,10 @@
 ##      docker build --progress=plain --no-cache -t agnione.net/agnione:0.0.0.2 .
 ##
 ## 2 test image
-##      docker run -i -t agnione.net/agnione:0.0.0.2
+##      docker run --name agnione_test -i -t agnione.net/agnione:0.0.0.2
+##
+## 3 remove test container
+##      docker rm agnione_test
 ###################################################################################################################
 
 ## builder
@@ -61,6 +64,7 @@ RUN mkdir -p /home/agnione/certs
 
 ## copy the built AgniOne framework executable
 COPY --from=builder_fm /home/src/agnione/src/agnione.app /home/agnione
+RUN chmod 744 /home/agnione/agnione.app
 
 ## copy built plugins
 COPY --from=builder_fm /home/agnione/plugins /home/agnione/plugins
@@ -68,8 +72,10 @@ COPY --from=builder_fm /home/agnione/plugins /home/agnione/plugins
 # Add the framework configs
 ADD ./config /home/agnione/config
 
-EXPOSE 8080-8081
+ADD ./agnione.sh /home/agnione
+RUN chmod 744 /home/agnione/agnione.sh
 
+EXPOSE 8080-8081
 WORKDIR /home/agnione
-RUN chmod 744 /home/agnione/agnione.app
-ENTRYPOINT  ["/home/agnione/agnione.app"]
+
+ENTRYPOINT  ["./agnione.sh"]

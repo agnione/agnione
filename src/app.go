@@ -85,6 +85,7 @@ func GetBasePath() *string {
 		_curDir = "./"
 	}
 
+	fmt.Println("Base path ", _curDir)
 	return &_curDir
 }
 
