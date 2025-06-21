@@ -194,6 +194,7 @@ start:
 
 	/// create AgniOne App instance and initialize it
 	println("using app root path\t: "+*main_path, "\nusing app log path\t: "+*log_path, "\nusing app unit path\t: "+*app_path+"\n\nInitialing AgniOne ......")
+	println("----------------------------------------------------------------------------------------------------------")
 
 	agniApp = new(agni.AgniApp)
 
@@ -264,7 +265,7 @@ start:
 }
 
 var banner = `
-############################################################
+##########################################################################################################
 
 ▄▄▄        ▄████  ███▄    █  ██▓
 ▒████▄     ██▒ ▀█▒ ██ ▀█   █ ▓██▒
@@ -276,8 +277,9 @@ var banner = `
   ░   ▒   ░ ░   ░    ░   ░ ░  ▒ ░
       ░  ░      ░          ░  ░  
                                  
+################################## AgniOne Application Framework V2 ######################################
 ############# AgniOne Application Framework V2 ##############
 Designed & Developed by D. Ajith Nilantha de Silva
 © 2025 D. Ajith Nilantha de Silva contact@agnione.net ajithdesilva@gmail.com
-############################################################
+##########################################################################################################
 `
