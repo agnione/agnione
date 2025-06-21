@@ -127,7 +127,7 @@ func main() {
 		runtime.GC()
 	}()
 
-	println("\n", banner, "\n")
+	println("\n", banner)
 	banner = ""
 
 	_buildinfo := BuildInfo() /// get the application build information
@@ -191,8 +191,8 @@ func main() {
 start:
 
 	/// create AgniOne App instance and initialize it
-	println("\tusing app root path\t: "+*main_path, "\n\tusing app log path\t: "+*log_path, "\n\tusing app unit path\t: "+*app_path+"\n\nInitialing AgniOne ......")
-	println("----------------------------------------------------------------------------------------------------------")
+	println("\tusing app root path\t: "+*main_path, "\n\tusing app log path\t: "+*log_path, "\n\tusing app unit path\t: "+*app_path)
+	println("----------------------------------------------------------------------------------------------------------\n\nInitialing AgniOne ......")
 
 	agniApp = new(agni.AgniApp)
 
