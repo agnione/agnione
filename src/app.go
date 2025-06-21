@@ -82,7 +82,7 @@ func GetBasePath() *string {
 		_curDir, _ = os.Executable()
 		_curDir = filepath.Dir(_curDir) + "/"
 	} else {
-		_curDir = "."
+		_curDir = "./"
 	}
 
 	return &_curDir
