@@ -7,5 +7,5 @@ LOGPATH="/home/agnione/logs/" ### set the default log path. this should mount wi
 
 cd /home/agnione
 
-### run the ZAF with params
+### run the AgniOne with default params
 ./agnione.app --main_path $MAINPATH --app_path $APPPATH --log_path $LOGPATH --rest_port 0 --cpu_count 0
