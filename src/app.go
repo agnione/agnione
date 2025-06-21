@@ -29,16 +29,14 @@
 	Class/module  :  app
 
 	Objective     :  Provide the application launcher/shell to start the AgniOne Application Framework
-	 		  			main entry of the KAF
+	 		  			main entry of the AgnieOne Framework
 #######################################################################################################################
-
 	Author                 	Date        	Action      	Description
 	--------------------------------------------------------------------------------------------------------------------
 	Ajith de Silva		24/10/2023	Created 	Created the initial version
 	Ajith de Silva		29/10/2023	Updated 	Added the interrupt handler
 	Ajith de Silva		12/11/2024	Updated 	Added the functions
 	Ajith de Silva		06/03/2024	Updated 	Added the log path as command line argument
-
 #######################################################################################################################
 */
 package main
@@ -185,7 +183,7 @@ func main() {
 	}
 
 	runtime.GOMAXPROCS(*cpu_count) /// set max CPU for go runtime
-	println("CPU cores     : "+strconv.Itoa(*cpu_count)+"/"+strconv.Itoa(runtime.NumCPU()), "\nOS Process ID : "+strconv.Itoa(_os_pid))
+	println("\tCPU cores     : "+strconv.Itoa(*cpu_count)+"/"+strconv.Itoa(runtime.NumCPU()), "\n\tOS Process ID : "+strconv.Itoa(_os_pid))
 	println("----------------------------------------------------------------------------------------------------------")
 	var _err error
 
@@ -193,7 +191,7 @@ func main() {
 start:
 
 	/// create AgniOne App instance and initialize it
-	println("using app root path\t: "+*main_path, "\nusing app log path\t: "+*log_path, "\nusing app unit path\t: "+*app_path+"\n\nInitialing AgniOne ......")
+	println("\tusing app root path\t: "+*main_path, "\n\tusing app log path\t: "+*log_path, "\n\tusing app unit path\t: "+*app_path+"\n\nInitialing AgniOne ......")
 	println("----------------------------------------------------------------------------------------------------------")
 
 	agniApp = new(agni.AgniApp)
@@ -267,19 +265,18 @@ start:
 var banner = `
 ##########################################################################################################
 
-▄▄▄        ▄████  ███▄    █  ██▓
-▒████▄     ██▒ ▀█▒ ██ ▀█   █ ▓██▒
-▒██  ▀█▄  ▒██░▄▄▄░▓██  ▀█ ██▒▒██▒
-░██▄▄▄▄██ ░▓█  ██▓▓██▒  ▐▌██▒░██░
- ▓█   ▓██▒░▒▓███▀▒▒██░   ▓██░░██░
- ▒▒   ▓▒█░ ░▒   ▒ ░ ▒░   ▒ ▒ ░▓  
-  ▒   ▒▒ ░  ░   ░ ░ ░░   ░ ▒░ ▒ ░
-  ░   ▒   ░ ░   ░    ░   ░ ░  ▒ ░
-      ░  ░      ░          ░  ░  
+		▄▄▄        ▄████  ███▄    █  ██▓
+		▒████▄     ██▒ ▀█▒ ██ ▀█   █ ▓██▒
+		▒██  ▀█▄  ▒██░▄▄▄░▓██  ▀█ ██▒▒██▒
+		░██▄▄▄▄██ ░▓█  ██▓▓██▒  ▐▌██▒░██░
+		▓█   ▓██▒░▒▓███▀▒▒██░   ▓██░░██░
+		▒▒   ▓▒█░ ░▒   ▒ ░ ▒░   ▒ ▒ ░▓  
+		▒   ▒▒ ░  ░   ░ ░ ░░   ░ ▒░ ▒ ░
+		░   ▒   ░ ░   ░    ░   ░ ░  ▒ ░
+			░  ░      ░          ░  ░  
                                  
 ################################## AgniOne Application Framework V2 ######################################
-############# AgniOne Application Framework V2 ##############
-Designed & Developed by D. Ajith Nilantha de Silva
-© 2025 D. Ajith Nilantha de Silva contact@agnione.net ajithdesilva@gmail.com
+	Designed & Developed by D. Ajith Nilantha de Silva
+	© 2025 D. Ajith Nilantha de Silva contact@agnione.net ajithdesilva@gmail.com
 ##########################################################################################################
 `
