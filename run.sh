@@ -2,4 +2,4 @@
 
 ### rung with custom ports
 
-./src/agnione.app --main_path ${PWD}/  --app_path ${PWD}/apps/config/demohttp/app.config --log_path ${PWD}/log/ --cpu_count 5 --rest_port 8080
+./src/agnione.app --main_path ${PWD}/  --app_path ${PWD}/apps/configs/demohttp/app.config --log_path ${PWD}/log/ --cpu_count 5 --rest_port 8080

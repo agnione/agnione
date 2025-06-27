@@ -8,13 +8,13 @@
 #                   All the Unit + configuration will be mounted via host to the running container
 #################################################################################################################
 ##  V2
-## 0. docker image rm agnione.net/agnione:0.0.0.2
+## 0. docker image rm agnione/appfm:0.0.0.2
 ##
 ## 1. build alpine docker image
-##      docker build --progress=plain --no-cache -t agnione.net/agnione:0.0.0.2 .
+##      docker build --no-cache -t agnione/appfm:0.0.0.2 .
 ##
 ## 2 test image
-##      docker run --name agnione_test -i -t agnione.net/agnione:0.0.0.2
+##      docker run --name agnione_test -i -t agnione/appfm:0.0.0.2
 ##
 ## 3 remove test container
 ##      docker rm agnione_test
@@ -74,6 +74,7 @@ ADD ./config /home/agnione/config
 
 ADD ./agnione.sh /home/agnione
 RUN chmod 744 /home/agnione/agnione.sh
+RUN chmod 744 /home/agnione/agnione.app
 
 EXPOSE 8080-8081
 WORKDIR /home/agnione

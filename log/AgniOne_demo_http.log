@@ -14493,3 +14493,14 @@
 {"level":"info","time":"2025-06-15T13:38:51+02:00","message":"Http_demo-0-130289 - Headers :\r\nAccess-Control-Allow-Credentials:true\nDate:Sun, 15 Jun 2025 11:38:51 GMT\nConnection:keep-alive\nAccess-Control-Allow-Origin:*\n"}
 {"level":"info","time":"2025-06-15T13:38:51+02:00","message":"Http_demo-0-130289 - demo http stopped. stopper channel closed "}
 {"level":"info","time":"2025-06-15T13:38:51+02:00","message":"broadcast event messages via SSE stopped"}
+{"level":"info","time":"2025-06-27T14:46:54+02:00","message":"Logger Initialized & Started"}
+{"level":"info","time":"2025-06-27T14:46:54+02:00","message":"Found 1 pool setting for appunit Http_demo"}
+{"level":"info","time":"2025-06-27T14:46:54+02:00","message":"Loading the 0 appunit of pool [1] of Http_demo"}
+{"level":"error","time":"2025-06-27T14:46:54+02:00","message":"Http_demo-0-9719 - Application Unit Http_demo failed to read the config file /media/ajith/work/developments/go/AgniOne/github/agnione/apps/config/demohttp/demohttp.configopen /media/ajith/work/developments/go/AgniOne/github/agnione/apps/config/demohttp/demohttp.config: no such file or directory"}
+{"level":"error","time":"2025-06-27T14:46:54+02:00","message":"Failed to initialize 1instace of the appunit 1 into pool of Http_demo\nHttp_demo-0-9719 - Application Unit Http_demo failed to read the config file /media/ajith/work/developments/go/AgniOne/github/agnione/apps/config/demohttp/demohttp.configopen /media/ajith/work/developments/go/AgniOne/github/agnione/apps/config/demohttp/demohttp.config: no such file or directory%!(EXTRA int8=1, string=Http_demo, *errors.errorString=Http_demo-0-9719 - Application Unit Http_demo failed to read the config file /media/ajith/work/developments/go/AgniOne/github/agnione/apps/config/demohttp/demohttp.configopen /media/ajith/work/developments/go/AgniOne/github/agnione/apps/config/demohttp/demohttp.config: no such file or directory)"}
+{"level":"warn","time":"2025-06-27T14:46:54+02:00","message":"No AgniOne Units loaded"}
+{"level":"info","time":"2025-06-27T14:46:55+02:00","message":"starting HTTP monitoring ......"}
+{"level":"info","time":"2025-06-27T14:46:55+02:00","message":"HTTP monitoring started on 0.0.0.0:8080"}
+{"level":"info","time":"2025-06-27T14:46:55+02:00","message":"broadcasting status via SSE started"}
+{"level":"info","time":"2025-06-27T14:46:55+02:00","message":"broadcasting log messages via SSE started"}
+{"level":"info","time":"2025-06-27T14:46:55+02:00","message":"broadcasting event messages via SSE started"}
