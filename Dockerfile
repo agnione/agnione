@@ -1,5 +1,5 @@
 #################################################################################################################
-# Author        :   D. Ajith Nilantha de Silva ajithdesilva@gmail.com,aontact@agnione.net
+# Author        :   D. Ajith Nilantha de Silva ajithdesilva@gmail.com, contact@agnione.net
 # Copyright     :   AgniOne.Net 2025
 # Date Written  :   20/06/2025
 # Class/module  :   AgniOne Framework Dockerization
@@ -25,12 +25,9 @@ FROM golang:1.24.4-alpine AS builder_fm
 
 RUN apk --no-cache add build-base bash git
 
-RUN mkdir -p /home/agnione/logs
-RUN mkdir -p /home/agnione/apps
-RUN mkdir -p /home/agnione/plugins
+RUN mkdir -p /home/agnione/logs /home/agnione/apps /home/agnione/plugins /home/src
 
 ## clone & setup packages
-RUN mkdir -p /home/src
 WORKDIR /home/src
 
 RUN git clone -b v2 https://github.com/agnione/libs.git
@@ -58,9 +55,7 @@ LABEL maintainer="ajithdesilva@gmail.com,contact@agnione.net"
 
 ## make folders for framework execution
 ## it is possible to mount host paths to these folders
-RUN mkdir -p /home/agnione/logs
-RUN mkdir -p /home/agnione/apps
-RUN mkdir -p /home/agnione/certs
+RUN mkdir -p /home/agnione/logs /home/agnione/apps /home/agnione/certs
 
 ## copy the built AgniOne framework executable
 COPY --from=builder_fm /home/src/agnione/src/agnione.app /home/agnione
@@ -73,8 +68,7 @@ COPY --from=builder_fm /home/agnione/plugins /home/agnione/plugins
 ADD ./config /home/agnione/config
 
 ADD ./agnione.sh /home/agnione
-RUN chmod 744 /home/agnione/agnione.sh
-RUN chmod 744 /home/agnione/agnione.app
+RUN chmod 744 /home/agnione/agnione.sh /home/agnione/agnione.app
 
 EXPOSE 8080-8081
 WORKDIR /home/agnione
